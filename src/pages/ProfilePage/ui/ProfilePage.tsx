@@ -1,17 +1,17 @@
-import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
+import useUserStore from '@/entities/User/model/user.store';
+import { IClinic } from '@/entities/Clinic/types';
+import { IVet } from '@/entities/Vet/types';
+
+import ClinicProfile from './components/ClinicProfile/ClinicProfile';
+import VetProfile from './components/VetProfile/VetProfile';
+
 const ProfilePage = () => {
+  const user = useUserStore((state) => state.user);
+  const isClinic = !!(user as IClinic)?.name;
+
   return (
-    <div className="">
-      <div className="flex gap-4">
-        <Avatar className="w-24 h-24">
-          <AvatarImage src="https://github.com/shadcn.png" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-        <div className="flex flex-col gap-1 ">
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">The Joke Tax</h3>
-          <p className="leading-7">Medic</p>
-        </div>
-      </div>
+    <div className="relative">
+      {isClinic ? <ClinicProfile clinic={user as IClinic} /> : <VetProfile vet={user as IVet} />}
     </div>
   );
 };
