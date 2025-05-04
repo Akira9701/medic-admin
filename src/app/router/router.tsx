@@ -8,12 +8,11 @@ import {
   registerRoute,
   rootRoute,
 } from './lib/constants';
-import Root from './root';
 import { ClipboardPlus, Dog, Home } from 'lucide-react';
 import VetsPage from '@/pages/VetsPage';
 import RegisterPage from '@/pages/RegisterPage';
 import LoginPage from '@/pages/LoginPage';
-
+import Root from './root';
 export const appSidebarItems = [
   {
     title: 'Profile',

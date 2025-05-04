@@ -1,14 +1,18 @@
 // import apiInstance from '@/shared/api/api.instance';
+// import { clinicMock } from '@/shared/mocks/clinic.mock';
+import { IClinic } from '@/entities/Clinic/types';
+import { IVet } from '@/entities/Vets/types';
 import { clinicMock } from '@/shared/mocks/clinic.mock';
 
 const userApi = {
-  getUser: async () => {
+  getUser: async (): Promise<IClinic | IVet | null> => {
     // const response = apiInstance.get('/auth/user');
     // return response.data;
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       setTimeout(() => {
+        // reject(new Error('test'));
         resolve(clinicMock);
-      }, 3000);
+      }, 1000);
     });
   },
 };
