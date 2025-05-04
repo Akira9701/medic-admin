@@ -1,5 +1,5 @@
 import { IClinic } from '@/entities/Clinic/types';
-import { IVet } from '@/entities/Vet/types';
+import { IVet } from '@/entities/Vets/types';
 import { clinicMock } from '@/shared/mocks/clinic.mock';
 import { create } from 'zustand';
 
