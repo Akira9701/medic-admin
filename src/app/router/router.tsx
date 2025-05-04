@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router';
 import { medicsRoute, patientsRoute, profileRoute, rootRoute } from './lib/constants';
 import Root from './root';
 import { ClipboardPlus, Dog, Home } from 'lucide-react';
+import VetsPage from '@/pages/VetsPage';
 
 export const appSidebarItems = [
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: profileRoute,
         element: <ProfilePage />,
+      },
+      {
+        path: medicsRoute,
+        element: <VetsPage />,
       },
     ],
   },
