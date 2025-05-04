@@ -1,6 +1,5 @@
 import { IClinic } from '@/entities/Clinic/types';
 import { IVet } from '@/entities/Vets/types';
-import { clinicMock } from '@/shared/mocks/clinic.mock';
 import { create } from 'zustand';
 
 interface IUserStore {
@@ -8,7 +7,7 @@ interface IUserStore {
 }
 
 const useUserStore = create<IUserStore>(() => ({
-  user: clinicMock,
+  user: null,
 }));
 
 export const setUser = (user: IClinic | IVet | null) => {
