@@ -3,6 +3,7 @@
 import { IClinic } from '@/entities/Clinic/types';
 import { IVet } from '@/entities/Vets/types';
 import { clinicMock } from '@/shared/mocks/clinic.mock';
+import { vetMock } from '@/shared/mocks/vet.mock';
 
 const userApi = {
   getUser: async (): Promise<IClinic | IVet | null> => {
@@ -11,7 +12,7 @@ const userApi = {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         // reject(new Error('test'));
-        resolve(clinicMock);
+        resolve(vetMock);
       }, 1000);
     });
   },

@@ -1,15 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
-import { Label } from '@/shared/ui/label';
-import { Switch } from '@/shared/ui/switch';
 import { FC } from 'react';
 
-interface IUserInfo {
+interface IClinicInfo {
   title: string;
   email: string;
   avatarUrl: string;
 }
 
-const UserInfo: FC<IUserInfo> = ({ title, email, avatarUrl }) => {
+const ClinicInfo: FC<IClinicInfo> = ({ title, email, avatarUrl }) => {
   return (
     <div className="flex gap-4 w-full">
       <Avatar className="w-24 h-24">
@@ -24,4 +22,4 @@ const UserInfo: FC<IUserInfo> = ({ title, email, avatarUrl }) => {
   );
 };
 
-export default UserInfo;
+export default ClinicInfo;

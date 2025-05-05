@@ -13,23 +13,6 @@ import VetsPage from '@/pages/VetsPage';
 import RegisterPage from '@/pages/RegisterPage';
 import LoginPage from '@/pages/LoginPage';
 import Root from './root';
-export const appSidebarItems = [
-  {
-    title: 'Profile',
-    url: profileRoute,
-    icon: Home,
-  },
-  {
-    title: 'Medics',
-    url: medicsRoute,
-    icon: ClipboardPlus,
-  },
-  {
-    title: 'Patients',
-    url: patientsRoute,
-    icon: Dog,
-  },
-];
 
 const router = createBrowserRouter([
   {

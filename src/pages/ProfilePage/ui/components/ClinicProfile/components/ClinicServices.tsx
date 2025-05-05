@@ -9,7 +9,7 @@ interface IClinicServices {
 const ClinicServices: FC<IClinicServices> = ({ services }) => {
   return (
     <div className="flex flex-col gap-2 mt-4">
-      <Label>Clinic Services</Label>
+      <Label>Услуги клиники</Label>
       <div className="flex gap-2">
         {services.map((service) => (
           <Badge key={service}>{service}</Badge>

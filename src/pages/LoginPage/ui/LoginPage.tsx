@@ -22,6 +22,7 @@ export default function LoginPage() {
       // Assuming an async login function
       const authResponse = await authApi.login(email, password);
       const userResponse = await userApi.getUser();
+      authToken.set(authResponse.token);
       setUser(userResponse as IClinic | IVet | null);
       setIsShowLoader(true);
       toast.success('Login successful');
@@ -29,7 +30,6 @@ export default function LoginPage() {
       delay(400).then(() => {
         setIsShowLoader(false);
       });
-      authToken.set(authResponse.data.token);
 
       //   const userResponse = await userApi.getUser();
       //   if (userResponse) {

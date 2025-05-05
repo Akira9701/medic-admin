@@ -6,10 +6,8 @@ const authApi = {
     email: string,
     password: string,
   ): Promise<{
-    data: {
-      token: string;
-      type: 'Bearer';
-    };
+    token: string;
+    type: 'Bearer';
   }> => {
     // const response = await apiInstance.post('/api/auth/login', { email, password });
     // return response.data;
@@ -17,7 +15,8 @@ const authApi = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
-          data: { token: '1234567890', type: 'Bearer' },
+          token: '1234567890',
+          type: 'Bearer',
         });
       }, 1000);
     });
