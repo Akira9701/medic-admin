@@ -12,7 +12,7 @@ export const appSidebarItems = [
     icon: Home,
   },
   {
-    title: 'Medics',
+    title: 'Vets',
     url: medicsRoute,
     icon: ClipboardPlus,
   },
