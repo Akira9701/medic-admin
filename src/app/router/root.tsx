@@ -2,7 +2,13 @@ import { Outlet } from 'react-router';
 import { SidebarProvider } from '@/shared/ui/sidebar';
 import { AppSidebar } from '@/shared/ui/appsidebar';
 import { useEffect, useMemo } from 'react';
-import { loginRoute, medicsRoute, patientsRoute, profileRoute, rootRoute } from './lib/constants';
+import {
+  appointmentsRoute,
+  loginRoute,
+  medicsRoute,
+  profileRoute,
+  rootRoute,
+} from './lib/constants';
 import { useNavigate } from 'react-router';
 import PageLoader from '@/widgets/PageLoader/ui/PageLoader';
 import useUserStore, { setUser } from '@/entities/User/model/user.store';
@@ -40,8 +46,8 @@ const Root = () => {
           ]),
 
       {
-        title: 'Patients',
-        url: patientsRoute,
+        title: 'Appointments',
+        url: appointmentsRoute,
         icon: Dog,
       },
     ],

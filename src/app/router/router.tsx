@@ -1,6 +1,7 @@
 import ProfilePage from '@/pages/ProfilePage/ui/ProfilePage';
 import { createBrowserRouter } from 'react-router';
 import {
+  appointmentsRoute,
   loginRoute,
   medicsRoute,
   profileRoute,
@@ -11,6 +12,7 @@ import VetsPage from '@/pages/VetsPage';
 import RegisterPage from '@/pages/RegisterPage';
 import LoginPage from '@/pages/LoginPage';
 import Root from './root';
+import AppointmentsPage from '@/pages/AppointmentsPage/ui/AppoitmentsPage';
 
 const router = createBrowserRouter([
   {
@@ -32,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: registerRoute,
         element: <RegisterPage />,
+      },
+      {
+        path: appointmentsRoute,
+        element: <AppointmentsPage />,
       },
     ],
   },
