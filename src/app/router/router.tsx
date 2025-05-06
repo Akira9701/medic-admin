@@ -3,10 +3,10 @@ import { createBrowserRouter } from 'react-router';
 import {
   appointmentsRoute,
   loginRoute,
-  medicsRoute,
   profileRoute,
   registerRoute,
   rootRoute,
+  vetsRoute,
 } from './lib/constants';
 import VetsPage from '@/pages/VetsPage';
 import RegisterPage from '@/pages/RegisterPage';
@@ -24,7 +24,7 @@ const router = createBrowserRouter([
         element: <ProfilePage />,
       },
       {
-        path: medicsRoute,
+        path: vetsRoute,
         element: <VetsPage />,
       },
       {
