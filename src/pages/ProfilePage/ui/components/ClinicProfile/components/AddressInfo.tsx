@@ -1,4 +1,5 @@
 import InputWithLabel from '@/shared/ui/inputWithLabel';
+import { ClinicPageChangeHandlerKey } from '@/types/profilePages.types';
 import { FC, useEffect, useState } from 'react';
 
 interface IAddresInfo {
@@ -8,7 +9,7 @@ interface IAddresInfo {
     building?: string;
     postalCode?: string;
   };
-  onChange: (key: string, value: string) => void;
+  onChange: (key: ClinicPageChangeHandlerKey, value: string) => void;
   isEditMode: boolean;
   isSomeDataChanged: boolean;
 }
@@ -30,49 +31,49 @@ const AddressInfo: FC<IAddresInfo> = ({ address, onChange, isEditMode, isSomeDat
       <div className="flex gap-4">
         <InputWithLabel
           disabled={!isEditMode}
-          label="City"
+          label="Город"
           value={city}
           onChange={(e) => {
             onChange('city', e.target.value);
             setCity(e.target.value);
           }}
           type="text"
-          placeholder="City"
+          placeholder="Город"
         />
         <InputWithLabel
           disabled={!isEditMode}
-          label="Street"
+          label="Улица"
           value={street}
           onChange={(e) => {
             onChange('street', e.target.value);
             setStreet(e.target.value);
           }}
           type="text"
-          placeholder="Street"
+          placeholder="Улица"
         />
       </div>
       <div className="flex gap-4">
         <InputWithLabel
           disabled={!isEditMode}
-          label="Building"
+          label="Номер дома"
           value={building}
           onChange={(e) => {
             onChange('building', e.target.value);
             setBuilding(e.target.value);
           }}
           type="text"
-          placeholder="Building"
+          placeholder="Номер дома"
         />
         <InputWithLabel
           disabled={!isEditMode}
-          label="Postal Code"
+          label="Почтовый индекс"
           value={postalCode}
           onChange={(e) => {
             onChange('postalCode', e.target.value);
             setPostalCode(e.target.value);
           }}
           type="text"
-          placeholder="Postal Code"
+          placeholder="Почтовый индекс"
         />
       </div>
     </div>

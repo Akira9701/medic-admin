@@ -1,14 +1,16 @@
 import { IClinic } from '@/entities/Clinic/types';
 import { FC, useCallback, useRef, useState } from 'react';
-import UserInfo from '../UserInfo/UserInfo';
+import UserInfo from './components/ClinicInfo';
 import AddressInfo from './components/AddressInfo';
-import TitleInfo from '../TitleInfo/TitleInfo';
 import { Separator } from '@/shared/ui/separator';
 import ClinicServices from './components/ClinicServices';
 import { Label } from '@/shared/ui/label';
 import { Switch } from '@/shared/ui/switch';
 import AlertModal from '@/shared/ui/alert-modal';
 import { Button } from '@/shared/ui/button';
+import { updateUser } from '@/entities/User/model/user.store';
+import TitleInfo from './components/TitleInfo';
+import { ClinicPageChangeHandlerKey } from '@/types/profilePages.types';
 
 interface IClinicProfile {
   clinic: IClinic;
@@ -27,7 +29,7 @@ const ClinicProfile: FC<IClinicProfile> = ({ clinic }) => {
   const [isEditMode, setIsEditMode] = useState(false);
 
   const [isSomeDataChanged, setIsSomeDataChanged] = useState<boolean>(false);
-  const userDataRef = useRef<Record<string, string | string[]>>({
+  const userDataRef = useRef<Partial<IClinic>>({
     name: clinic?.name,
     email: clinic?.email,
     description: clinic?.description,
@@ -37,7 +39,7 @@ const ClinicProfile: FC<IClinicProfile> = ({ clinic }) => {
   });
 
   const handleChange = useCallback(
-    (key: string, value: string) => {
+    (key: ClinicPageChangeHandlerKey, value: string) => {
       userDataRef.current[key] = value;
       if (!isSomeDataChanged) {
         console.log(isSomeDataChanged);
@@ -78,16 +80,18 @@ const ClinicProfile: FC<IClinicProfile> = ({ clinic }) => {
           className="mt-4 ml-auto"
           variant="outline"
           onClick={() => setIsSomeDataChanged(false)}>
-          Reset Data
+          Сбросить
         </Button>
         <AlertModal
           classNameButton="ml-4 mt-4"
-          title="Are you sure?"
-          description="This action cannot be undone."
-          buttonApproveText="Approve"
-          buttonCancelText="Cancel"
-          buttonShowModalText="Save Data"
-          onApprove={() => {}}
+          title="Вы уверены?"
+          description="Это действие нельзя отменить."
+          buttonApproveText="Сохранить"
+          buttonCancelText="Отменить"
+          buttonShowModalText="Сохранить"
+          onApprove={() => {
+            updateUser<IClinic>(userDataRef.current);
+          }}
           onCancel={() => {}}
         />
       </div>

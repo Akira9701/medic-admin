@@ -1,27 +1,16 @@
 import ProfilePage from '@/pages/ProfilePage/ui/ProfilePage';
 import { createBrowserRouter } from 'react-router';
-import { medicsRoute, patientsRoute, profileRoute, rootRoute } from './lib/constants';
-import Root from './root';
-import { ClipboardPlus, Dog, Home } from 'lucide-react';
+import {
+  loginRoute,
+  medicsRoute,
+  profileRoute,
+  registerRoute,
+  rootRoute,
+} from './lib/constants';
 import VetsPage from '@/pages/VetsPage';
-
-export const appSidebarItems = [
-  {
-    title: 'Profile',
-    url: profileRoute,
-    icon: Home,
-  },
-  {
-    title: 'Vets',
-    url: medicsRoute,
-    icon: ClipboardPlus,
-  },
-  {
-    title: 'Patients',
-    url: patientsRoute,
-    icon: Dog,
-  },
-];
+import RegisterPage from '@/pages/RegisterPage';
+import LoginPage from '@/pages/LoginPage';
+import Root from './root';
 
 const router = createBrowserRouter([
   {
@@ -35,6 +24,14 @@ const router = createBrowserRouter([
       {
         path: medicsRoute,
         element: <VetsPage />,
+      },
+      {
+        path: loginRoute,
+        element: <LoginPage />,
+      },
+      {
+        path: registerRoute,
+        element: <RegisterPage />,
       },
     ],
   },

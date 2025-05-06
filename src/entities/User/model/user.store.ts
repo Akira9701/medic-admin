@@ -1,23 +1,23 @@
 import { IClinic } from '@/entities/Clinic/types';
 import { IVet } from '@/entities/Vets/types';
-import { clinicMock } from '@/shared/mocks/clinic.mock';
 import { create } from 'zustand';
 
+type userType = IClinic | IVet | null;
 interface IUserStore {
-  user: IClinic | IVet | null;
+  user: userType;
 }
 
 const useUserStore = create<IUserStore>(() => ({
-  user: clinicMock,
+  user: null,
 }));
 
-export const setUser = (user: IClinic | IVet | null) => {
+export const setUser = <T extends userType>(user: T) => {
   useUserStore.setState({ user });
 };
 
-export const updateUser = (user: Partial<IClinic> | Partial<IVet>) => {
+export const updateUser = <T extends userType>(user: Partial<T>) => {
   useUserStore.setState((state) => ({
-    user: { ...state.user, ...user } as IClinic | IVet,
+    user: { ...state.user, ...user } as T,
   }));
 };
 

@@ -1,5 +1,6 @@
 import InputWithLabel from '@/shared/ui/inputWithLabel';
 import { Textarea } from '@/shared/ui/textarea';
+import { ClinicPageChangeHandlerKey } from '@/types/profilePages.types';
 import { FC, useEffect, useState } from 'react';
 
 interface ITitleInfo {
@@ -7,7 +8,7 @@ interface ITitleInfo {
   name: string;
   email: string;
   description: string;
-  onChange: (key: string, value: string) => void;
+  onChange: (key: ClinicPageChangeHandlerKey, value: string) => void;
   isEditMode: boolean;
 }
 
@@ -36,14 +37,14 @@ const TitleInfo: FC<ITitleInfo> = ({
       <div className="flex gap-4">
         <InputWithLabel
           disabled={!isEditMode}
-          label="Name"
+          label="Название"
           value={localName}
           onChange={(e) => {
             setLocalName(e.target.value);
             onChange('name', e.target.value);
           }}
           type="text"
-          placeholder="Name"
+          placeholder="Название"
         />
         <InputWithLabel
           disabled={!isEditMode}
@@ -59,7 +60,7 @@ const TitleInfo: FC<ITitleInfo> = ({
       </div>
       <Textarea
         disabled={!isEditMode}
-        placeholder="Description"
+        placeholder="Описание"
         value={localDescription}
         onChange={(e) => {
           setLocalDescription(e.target.value);
