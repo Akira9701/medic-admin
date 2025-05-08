@@ -21,6 +21,22 @@ export const updateUser = <T extends userType>(user: Partial<T>) => {
   }));
 };
 
+export const removeVetFromClinic = (vetId: string) => {
+  useUserStore.setState((state) => {
+    if (state.user && 'vets' in state.user) {
+      const updatedUser = {
+        ...state.user,
+        vets: (state.user as IClinic).vets.filter((vet) => vet.id !== vetId),
+      } as IClinic;
+
+      return {
+        user: updatedUser,
+      };
+    }
+    return state;
+  });
+};
+
 export const clearUser = () => {
   useUserStore.setState({ user: null });
 };
