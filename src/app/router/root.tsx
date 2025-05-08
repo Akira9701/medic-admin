@@ -23,6 +23,7 @@ import authToken from '@/shared/localstorage/authToken';
 import { Dog } from 'lucide-react';
 import { ClipboardPlus, Hospital } from 'lucide-react';
 import { Home } from 'lucide-react';
+import AuthProvider from '../providers/AuthProvider';
 const Root = () => {
   const navigate = useNavigate();
   const isShowLoader = useAuthStore((state) => state.isShowLoader);
@@ -85,29 +86,28 @@ const Root = () => {
   }, []);
   console.log(isShowLoader);
   return (
-    <>
+    <AuthProvider>
       <Toaster />
       {<PageLoader isShow={isShowLoader} />}
-      {!isShowLoader && (
-        <SidebarProvider>
-          {!isShowLoader && isUser ? (
-            <>
-              <AppSidebar items={rootItems} />
-              <main className="flex-1 p-4 h-dvh w-dvw">
-                <div className="br-8 rounded-lg border-gray-200 h-full w-full border p-4">
-                  <Outlet />
-                </div>
-              </main>
-            </>
-          ) : (
-            <>
-              {' '}
-              <Outlet />
-            </>
-          )}
-        </SidebarProvider>
-      )}
-    </>
+
+      <SidebarProvider>
+        {!isShowLoader && isUser ? (
+          <>
+            <AppSidebar items={rootItems} />
+            <main className="flex-1 p-4 h-dvh w-dvw">
+              <div className="br-8 rounded-lg border-gray-200 h-full w-full border p-4">
+                <Outlet />
+              </div>
+            </main>
+          </>
+        ) : (
+          <>
+            {' '}
+            <Outlet />
+          </>
+        )}
+      </SidebarProvider>
+    </AuthProvider>
   );
 };
 
