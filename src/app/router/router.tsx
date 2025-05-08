@@ -2,6 +2,7 @@ import ProfilePage from '@/pages/ProfilePage/ui/ProfilePage';
 import { createBrowserRouter } from 'react-router';
 import {
   appointmentsRoute,
+  clinicVetsRoute,
   loginRoute,
   profileRoute,
   registerRoute,
@@ -13,6 +14,7 @@ import RegisterPage from '@/pages/RegisterPage';
 import LoginPage from '@/pages/LoginPage';
 import Root from './root';
 import AppointmentsPage from '@/pages/AppointmentsPage/ui/AppoitmentsPage';
+import AllVetsPage from '@/pages/AllVetsPage/ui/AllVetsPage';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +40,10 @@ const router = createBrowserRouter([
       {
         path: appointmentsRoute,
         element: <AppointmentsPage />,
+      },
+      {
+        path: clinicVetsRoute,
+        element: <AllVetsPage />,
       },
     ],
   },

@@ -2,7 +2,14 @@ import { Outlet } from 'react-router';
 import { SidebarProvider } from '@/shared/ui/sidebar';
 import { AppSidebar } from '@/shared/ui/appsidebar';
 import { useEffect, useMemo } from 'react';
-import { appointmentsRoute, loginRoute, profileRoute, rootRoute, vetsRoute } from './lib/constants';
+import {
+  appointmentsRoute,
+  clinicVetsRoute,
+  loginRoute,
+  profileRoute,
+  rootRoute,
+  vetsRoute,
+} from './lib/constants';
 import { useNavigate } from 'react-router';
 import PageLoader from '@/widgets/PageLoader/ui/PageLoader';
 import useUserStore, { setUser } from '@/entities/User/model/user.store';
@@ -14,7 +21,7 @@ import useAuthStore, { setIsShowLoader } from '@/entities/Auth/model/auth.store'
 import { Toaster } from 'sonner';
 import authToken from '@/shared/localstorage/authToken';
 import { Dog } from 'lucide-react';
-import { ClipboardPlus } from 'lucide-react';
+import { ClipboardPlus, Hospital } from 'lucide-react';
 import { Home } from 'lucide-react';
 const Root = () => {
   const navigate = useNavigate();
@@ -33,9 +40,14 @@ const Root = () => {
         ? []
         : [
             {
-              title: 'Vets',
+              title: 'All Vets',
               url: vetsRoute,
               icon: ClipboardPlus,
+            },
+            {
+              title: 'Clinic Vets',
+              url: clinicVetsRoute,
+              icon: Hospital,
             },
           ]),
 
