@@ -122,6 +122,7 @@ export default function PetDetailPage() {
       };
 
       await petApi.addMedicalRecord(id, newRecord);
+      setMedicalRecords([...medicalRecords, newRecord]);
       form.reset();
     } catch (error) {
       console.error('Error adding medical record:', error);
@@ -312,9 +313,9 @@ export default function PetDetailPage() {
               </div>
               <Separator className="my-3" />
 
-              <div>
+              <div className=" max-h-[500px]">
                 {medicalRecords && medicalRecords.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-4 overflow-y-scroll max-h-[500px]">
                     {medicalRecords.map((record) => (
                       <div key={record.id} className="border rounded-lg p-3">
                         <div className="flex justify-between items-center mb-2">
