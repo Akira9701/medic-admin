@@ -11,6 +11,7 @@ import { Input } from '@/shared/ui/input';
 import { PasswordInput } from '@/shared/ui/password-input';
 import { registerRoute } from '@/app/router/lib/constants';
 import { Link } from 'react-router';
+import { TitleSwitcher } from '@/shared/ui/title-switcher';
 
 // Improved schema with additional validation rules
 const formSchema = z.object({
@@ -24,9 +25,11 @@ const formSchema = z.object({
 interface ILoginForm {
   isLoading: boolean;
   onSubmit: (email: string, password: string) => void;
+  isClinic: boolean;
+  setIsClinic: (checked: boolean) => void;
 }
 
-export default function LoginForm({ onSubmit, isLoading }: ILoginForm) {
+export default function LoginForm({ onSubmit, isLoading, isClinic, setIsClinic }: ILoginForm) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,9 +41,7 @@ export default function LoginForm({ onSubmit, isLoading }: ILoginForm) {
   return (
     <div className="flex h-dvh w-dvw items-center justify-center">
       <div className="flex flex-col min-h-[50vh] h-full w-full items-center justify-center px-4">
-        <Card
-          className="mx-auto  w-sm
-">
+        <Card className="mx-auto w-sm">
           <CardHeader>
             <CardTitle className="text-2xl">Login</CardTitle>
             <CardDescription>
@@ -64,7 +65,7 @@ export default function LoginForm({ onSubmit, isLoading }: ILoginForm) {
                         <FormControl>
                           <Input
                             id="email"
-                            placeholder="johndoe@mail.com"
+                            placeholder={isClinic ? 'clinic@example.com' : 'doctor@example.com'}
                             type="email"
                             autoComplete="email"
                             {...field}
@@ -97,6 +98,7 @@ export default function LoginForm({ onSubmit, isLoading }: ILoginForm) {
                       </FormItem>
                     )}
                   />
+                  <TitleSwitcher isChecked={isClinic} setIsChecked={setIsClinic} title="Clinic" />
                   <Button loading={isLoading} type="submit" className="w-full">
                     Login
                   </Button>

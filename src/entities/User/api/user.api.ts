@@ -10,8 +10,8 @@ const userApi = {
     // return response.data;
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        reject(new Error('test'));
-        // resolve(clinicMock);
+        // reject(new Error('test'));
+        resolve(clinicMock);
       }, 1000);
     });
   },
