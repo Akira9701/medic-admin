@@ -108,7 +108,7 @@ export default function RegisterPage() {
           postalCode: '',
           services: [],
           logoUrl: '',
-          workingHours: [],
+          workingHours: [''],
           vets: [
             {
               id: '',
@@ -123,7 +123,7 @@ export default function RegisterPage() {
         // Create vet data
         userData = {
           id: `vet-${Date.now()}`,
-          firstName: values.name.split(' ')[0] || '',
+          firstName: values.name.split(' ')[0] || 'Unknown',
           lastName: values.name.split(' ').slice(1).join(' ') || '',
           specialization: '',
           qualification: '',
