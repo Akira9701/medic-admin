@@ -10,17 +10,19 @@ import {
   AlertDialogTrigger,
 } from '@/shared/ui/alert-dialog';
 import { Button } from '@/shared/ui/button';
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 
 interface AlertModalProps {
   title: string;
   description: string;
-  buttonApproveText: string;
+  buttonApproveText: ReactNode;
   buttonCancelText: string;
-  buttonShowModalText: string;
+  buttonShowModalText: ReactNode;
   classNameButton?: string;
   onApprove: () => void;
   onCancel: () => void;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 const AlertModal: FC<AlertModalProps> = ({
@@ -32,9 +34,24 @@ const AlertModal: FC<AlertModalProps> = ({
   classNameButton,
   onApprove,
   onCancel,
+  isOpen,
+  onOpenChange,
 }) => {
+  const handleOpenChange = (open: boolean) => {
+    // Если пытаемся закрыть окно, но идет процесс удаления - не закрываем
+    if (!open && buttonApproveText !== "Удалить") {
+      return;
+    }
+    onOpenChange(open);
+  };
+
+  const handleApprove = (e: React.MouseEvent) => {
+    e.preventDefault();
+    onApprove();
+  };
+
   return (
-    <AlertDialog>
+    <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild className={classNameButton}>
         <Button variant="outline">{buttonShowModalText}</Button>
       </AlertDialogTrigger>
@@ -45,7 +62,11 @@ const AlertModal: FC<AlertModalProps> = ({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onCancel}>{buttonCancelText}</AlertDialogCancel>
-          <AlertDialogAction onClick={onApprove}>{buttonApproveText}</AlertDialogAction>
+          <AlertDialogAction asChild>
+            <Button onClick={handleApprove} disabled={buttonApproveText !== "Удалить"}>
+              {buttonApproveText}
+            </Button>
+          </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
