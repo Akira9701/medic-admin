@@ -6,6 +6,7 @@ import {
   appointmentsRoute,
   clinicVetsRoute,
   loginRoute,
+  petsRoute,
   profileRoute,
   rootRoute,
   vetsRoute,
@@ -20,10 +21,11 @@ import { delay } from '@/shared/lib/utils/delay.utils';
 import useAuthStore, { setIsShowLoader } from '@/entities/Auth/model/auth.store';
 import { Toaster } from 'sonner';
 import authToken from '@/shared/localstorage/authToken';
-import { Dog } from 'lucide-react';
+import { Dog, Stethoscope } from 'lucide-react';
 import { ClipboardPlus, Hospital } from 'lucide-react';
 import { Home } from 'lucide-react';
 import AuthProvider from '../providers/AuthProvider';
+
 const Root = () => {
   const navigate = useNavigate();
   const isShowLoader = useAuthStore((state) => state.isShowLoader);
@@ -51,11 +53,15 @@ const Root = () => {
               icon: Hospital,
             },
           ]),
-
       {
         title: 'Appointments',
         url: appointmentsRoute,
         icon: Dog,
+      },
+      {
+        title: 'Pets',
+        url: petsRoute,
+        icon: Stethoscope,
       },
     ],
     [isClinic],

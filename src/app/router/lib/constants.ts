@@ -7,4 +7,8 @@ export const appointmentsRoute = '/appointments';
 export const loginRoute = '/login';
 export const registerRoute = '/register';
 
+// Add new pet routes
+export const petsRoute = '/pets';
+export const petDetailRoute = '/pets/:id';
+
 export const authRoutes = [loginRoute, registerRoute];
