@@ -23,6 +23,7 @@ interface AlertModalProps {
   onCancel: () => void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  disabledButtonApprove?: boolean;
 }
 
 const AlertModal: FC<AlertModalProps> = ({
@@ -36,6 +37,7 @@ const AlertModal: FC<AlertModalProps> = ({
   onCancel,
   isOpen,
   onOpenChange,
+  disabledButtonApprove,
 }) => {
   const handleOpenChange = (open: boolean) => {
     // Если пытаемся закрыть окно, но идет процесс удаления - не закрываем
@@ -53,7 +55,9 @@ const AlertModal: FC<AlertModalProps> = ({
   return (
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
       <AlertDialogTrigger asChild className={classNameButton}>
-        <Button variant="outline">{buttonShowModalText}</Button>
+        <Button variant="outline" disabled={disabledButtonApprove}>
+          {buttonShowModalText}
+        </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>

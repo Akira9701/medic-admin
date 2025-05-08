@@ -10,6 +10,7 @@ import AlertModal from '@/shared/ui/alert-modal';
 import { updateUser } from '@/entities/User/model/user.store';
 import { VetPageChangeHandlerKey } from '@/types/profilePages.types';
 import { Button } from '@/shared/ui/button';
+import Services from '../Services/ui/Services';
 
 interface IVetProfileProps {
   vet: IVet;
@@ -17,8 +18,9 @@ interface IVetProfileProps {
 
 const VetProfile: FC<IVetProfileProps> = ({ vet }) => {
   const [isEditMode, setIsEditMode] = useState(false);
-
+  const [isOpenAlertModal, setIsOpenAlertModal] = useState(false);
   const [isSomeDataChanged, setIsSomeDataChanged] = useState<boolean>(false);
+  const [services, setServices] = useState<string[]>(vet?.services || []);
   const userDataRef = useRef<Partial<IVet>>({
     firstName: vet?.firstName,
     lastName: vet?.lastName,
@@ -77,6 +79,17 @@ const VetProfile: FC<IVetProfileProps> = ({ vet }) => {
         isEditMode={isEditMode}
         isSomeDataChanged={isSomeDataChanged}
       />
+      <Separator className="mt-4" />
+      <Services
+        addService={(service) => {
+          setServices([...services, service]);
+        }}
+        services={services}
+        removeService={(service) => {
+          console.log(service);
+          setServices(services.filter((s) => s !== service));
+        }}
+      />
       <Separator className="my-4" />
       <div className="w-full flex justify-end">
         <Button
@@ -87,6 +100,9 @@ const VetProfile: FC<IVetProfileProps> = ({ vet }) => {
           Сбросить
         </Button>
         <AlertModal
+          disabledButtonApprove={!isSomeDataChanged}
+          isOpen={isOpenAlertModal}
+          onOpenChange={setIsOpenAlertModal}
           classNameButton="ml-4 mt-4"
           title="Вы уверены?"
           description="Это действие нельзя отменить."
@@ -94,9 +110,12 @@ const VetProfile: FC<IVetProfileProps> = ({ vet }) => {
           buttonCancelText="Отменить"
           buttonShowModalText="Сохранить"
           onApprove={() => {
-            updateUser<IVet>(userDataRef.current);
+            updateUser<IVet>({ ...userDataRef.current, services });
+            setIsOpenAlertModal(false);
           }}
-          onCancel={() => {}}
+          onCancel={() => {
+            setIsOpenAlertModal(false);
+          }}
         />
       </div>
     </>
