@@ -40,7 +40,18 @@ const Root = () => {
         icon: Home,
       },
       ...(!isClinic
-        ? []
+        ? [
+            {
+              title: 'Pets',
+              url: petsRoute,
+              icon: Stethoscope,
+            },
+            {
+              title: 'Appointments',
+              url: appointmentsRoute,
+              icon: Dog,
+            },
+          ]
         : [
             {
               title: 'All Vets',
@@ -53,16 +64,6 @@ const Root = () => {
               icon: Hospital,
             },
           ]),
-      {
-        title: 'Appointments',
-        url: appointmentsRoute,
-        icon: Dog,
-      },
-      {
-        title: 'Pets',
-        url: petsRoute,
-        icon: Stethoscope,
-      },
     ],
     [isClinic],
   );
