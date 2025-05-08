@@ -14,7 +14,7 @@ import RegisterPage from '@/pages/RegisterPage';
 import LoginPage from '@/pages/LoginPage';
 import Root from './root';
 import AppointmentsPage from '@/pages/AppointmentsPage/ui/AppoitmentsPage';
-import AllVetsPage from '@/pages/AllVetsPage/ui/AllVetsPage';
+import ClinicVetsPage from '@/pages/ClinicVetsPage/ui/AllVetsPage';
 
 const router = createBrowserRouter([
   {
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
       },
       {
         path: clinicVetsRoute,
-        element: <AllVetsPage />,
+        element: <ClinicVetsPage />,
       },
     ],
   },
