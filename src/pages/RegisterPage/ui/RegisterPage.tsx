@@ -10,15 +10,24 @@ import { Input } from '@/shared/ui/input';
 import { PasswordInput } from '@/shared/ui/password-input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
-import { Link } from 'react-router';
-import { loginRoute } from '@/app/router/lib/constants';
+import { Link, useNavigate } from 'react-router';
+import { loginRoute, rootRoute } from '@/app/router/lib/constants';
+import { TitleSwitcher } from '@/shared/ui/title-switcher';
+import { useState } from 'react';
+import userApi from '@/entities/User/api/user.api';
+import { IClinic } from '@/entities/Clinic/types';
+import { IVet } from '@/entities/Vets/types';
+import { setUser } from '@/entities/User/model/user.store';
+import { setIsShowLoader } from '@/entities/Auth/model/auth.store';
+import { delay } from '@/shared/lib/utils/delay.utils';
+import authApi from '@/shared/api/auth.api';
+import authToken from '@/shared/localstorage/authToken';
 
-// Define validation schema using Zod
-const formSchema = z
+// Define validation schema using Zod for Vet
+const vetFormSchema = z
   .object({
     name: z.string().min(2, { message: 'Name must be at least 2 characters long' }),
     email: z.string().email({ message: 'Invalid email address' }),
-    phone: z.string().min(10, { message: 'Phone number must be valid' }),
     password: z
       .string()
       .min(6, { message: 'Password must be at least 6 characters long' })
@@ -30,30 +39,131 @@ const formSchema = z
     message: 'Passwords do not match',
   });
 
+// Define validation schema for Clinic
+const clinicFormSchema = z
+  .object({
+    name: z.string().min(2, { message: 'Clinic name must be at least 2 characters long' }),
+    email: z.string().email({ message: 'Invalid email address' }),
+    password: z
+      .string()
+      .min(6, { message: 'Password must be at least 6 characters long' })
+      .regex(/[a-zA-Z0-9]/, { message: 'Password must be alphanumeric' }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Passwords do not match',
+  });
+
+// Type for form values
+type FormValues = z.infer<typeof vetFormSchema> | z.infer<typeof clinicFormSchema>;
+
 export default function RegisterPage() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const navigate = useNavigate();
+  const [isClinic, setIsClinic] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Create form with conditional schema based on isClinic
+  const form = useForm<FormValues>({
+    resolver: zodResolver(isClinic ? clinicFormSchema : vetFormSchema),
     defaultValues: {
       name: '',
       email: '',
-      phone: '',
       password: '',
       confirmPassword: '',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  // Reset form when switching between clinic and vet
+  const handleClinicToggle = (checked: boolean) => {
+    setIsClinic(checked);
+    form.reset({
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    });
+  };
+
+  async function onSubmit(values: FormValues) {
+    setIsLoading(true);
     try {
-      // Assuming an async registration function
-      console.log(values);
-      toast(
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-        </pre>,
-      );
+      // Register user and get authentication token
+      const authResponse = await authApi.login(values.email, values.password);
+
+      // Create properly typed user data
+      let userData: IClinic | IVet;
+
+      if (isClinic) {
+        // Create clinic data
+        userData = {
+          id: `clinic-${Date.now()}`,
+          name: values.name,
+          description: '',
+          phone: '',
+          email: values.email,
+          city: '',
+          street: '',
+          building: '',
+          postalCode: '',
+          services: [],
+          logoUrl: '',
+          workingHours: [],
+          vets: [
+            {
+              id: '',
+              firstName: '',
+              lastName: '',
+              specialization: '',
+              avatarUrl: '',
+            },
+          ],
+        };
+      } else {
+        // Create vet data
+        userData = {
+          id: `vet-${Date.now()}`,
+          firstName: values.name.split(' ')[0] || '',
+          lastName: values.name.split(' ').slice(1).join(' ') || '',
+          specialization: '',
+          qualification: '',
+          bio: '',
+          email: values.email,
+          avatarUrl: '',
+          clinic: {
+            id: '',
+            name: '',
+            logoUrl: '',
+          },
+          services: [],
+          address: {
+            city: '',
+            street: '',
+            building: '',
+          },
+        };
+      }
+
+      const createdUser = await userApi.createUser(userData);
+
+      // Set auth token and user data
+      authToken.set(authResponse.token);
+      setUser(createdUser);
+
+      // Show loader and navigate
+      setIsShowLoader(true);
+      toast.success('Registration successful');
+      navigate(rootRoute);
+
+      // Hide loader after delay
+      delay(400).then(() => {
+        setIsShowLoader(false);
+      });
     } catch (error) {
-      console.error('Form submission error', error);
-      toast.error('Failed to submit the form. Please try again.');
+      console.error('Registration error', error);
+      toast.error('Failed to register. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -75,9 +185,15 @@ export default function RegisterPage() {
                     name="name"
                     render={({ field }) => (
                       <FormItem className="grid gap-2">
-                        <FormLabel htmlFor="name">Full Name</FormLabel>
+                        <FormLabel htmlFor="name">
+                          {isClinic ? 'Clinic Name' : 'Full Name'}
+                        </FormLabel>
                         <FormControl>
-                          <Input id="name" placeholder="John Doe" {...field} />
+                          <Input
+                            id="name"
+                            placeholder={isClinic ? 'Animal Care Clinic' : 'John Doe'}
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -94,7 +210,7 @@ export default function RegisterPage() {
                         <FormControl>
                           <Input
                             id="email"
-                            placeholder="johndoe@mail.com"
+                            placeholder="contact@example.com"
                             type="email"
                             autoComplete="email"
                             {...field}
@@ -124,7 +240,6 @@ export default function RegisterPage() {
                       </FormItem>
                     )}
                   />
-
                   {/* Confirm Password Field */}
                   <FormField
                     control={form.control}
@@ -144,9 +259,13 @@ export default function RegisterPage() {
                       </FormItem>
                     )}
                   />
-
-                  <Button type="submit" className="w-full">
-                    Login
+                  <TitleSwitcher
+                    isChecked={isClinic}
+                    setIsChecked={handleClinicToggle}
+                    title="Clinic"
+                  />
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? 'Registering...' : 'Register'}
                   </Button>
                 </div>
               </form>
