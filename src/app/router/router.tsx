@@ -8,6 +8,8 @@ import {
   registerRoute,
   rootRoute,
   vetsRoute,
+  petsRoute,
+  petDetailRoute,
 } from './lib/constants';
 import VetsPage from '@/pages/VetsPage';
 import RegisterPage from '@/pages/RegisterPage';
@@ -15,6 +17,8 @@ import LoginPage from '@/pages/LoginPage';
 import Root from './root';
 import AppointmentsPage from '@/pages/AppointmentsPage/ui/AppoitmentsPage';
 import ClinicVetsPage from '@/pages/ClinicVetsPage/ui/ClinicVetsPage';
+import PetListPage from '@/pages/PetListPage/ui/PetListPage';
+import PetDetailPage from '@/pages/PetDetailPage/ui/PetDetailPage';
 
 const router = createBrowserRouter([
   {
@@ -44,6 +48,14 @@ const router = createBrowserRouter([
       {
         path: clinicVetsRoute,
         element: <ClinicVetsPage />,
+      },
+      {
+        path: petsRoute,
+        element: <PetListPage />,
+      },
+      {
+        path: petDetailRoute,
+        element: <PetDetailPage />,
       },
     ],
   },
