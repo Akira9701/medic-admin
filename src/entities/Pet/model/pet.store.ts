@@ -31,4 +31,16 @@ export const setSelectedPet = (pet: IPet) => {
   usePetStore.setState({ selectedPet: pet });
 };
 
+export const updatePet = async (id: string, settings: Partial<IPet>) => {
+  try {
+    usePetStore.setState({
+      selectedPet: { ...usePetStore.getState().selectedPet, ...settings } as IPet,
+      pets: usePetStore.getState().pets.map((p) => (p.id === id ? { ...p, ...settings } : p)),
+    });
+  } catch (error) {
+    console.error('Failed to update pet:', error);
+    toast.error('Failed to update pet');
+  }
+};
+
 export default usePetStore;

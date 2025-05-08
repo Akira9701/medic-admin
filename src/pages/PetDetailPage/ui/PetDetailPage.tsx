@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { Link, useParams } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,9 +8,9 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Textarea } from '@/shared/ui/textarea';
-import usePetStore from '@/entities/Pet/model/pet.store';
+import usePetStore, { updatePet } from '@/entities/Pet/model/pet.store';
 import useUserStore from '@/entities/User/model/user.store';
-import { IMedicalRecord } from '@/entities/Pet/types';
+import { IPet, IMedicalRecord } from '@/entities/Pet/types';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,6 +18,12 @@ import { Separator } from '@/shared/ui/separator';
 import { Calendar, Clock, LoaderPinwheel, Shield, Stethoscope } from 'lucide-react';
 import { medicalRecordSchema, MedicalRecordFormValues } from '../lib/schema';
 import petApi from '@/entities/Pet/api/pet.api';
+import { Label } from '@/shared/ui/label';
+import { Switch } from '@/shared/ui/switch';
+import AlertModal from '@/shared/ui/alert-modal';
+
+// Define a type for editable pet fields
+type EditablePetFields = Pick<IPet, 'name' | 'breed' | 'birthDate' | 'chipNumber'>;
 
 export default function PetDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +31,21 @@ export default function PetDetailPage() {
   const user = useUserStore((state) => state.user);
   const [loading, setLoading] = useState(true);
   const [medicalRecords, setMedicalRecords] = useState<IMedicalRecord[]>([]);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [isSomeDataChanged, setIsSomeDataChanged] = useState<boolean>(false);
+  const [isOpenAlertModal, setIsOpenAlertModal] = useState(false);
+
+  const petDataRef = useRef<EditablePetFields>(
+    selectedPet
+      ? {
+          name: selectedPet.name,
+          breed: selectedPet.breed,
+          birthDate: selectedPet.birthDate,
+          chipNumber: selectedPet.chipNumber,
+        }
+      : ({} as EditablePetFields),
+  );
+
   const isVet = useMemo(() => {
     return user && 'specialization' in user;
   }, [user]);
@@ -55,6 +76,27 @@ export default function PetDetailPage() {
         });
     }
   }, [id]);
+
+  useEffect(() => {
+    if (selectedPet) {
+      petDataRef.current = {
+        name: selectedPet.name,
+        breed: selectedPet.breed,
+        birthDate: selectedPet.birthDate,
+        chipNumber: selectedPet.chipNumber,
+      };
+    }
+  }, [selectedPet]);
+
+  const handleChange = useCallback(
+    (key: keyof EditablePetFields, value: string) => {
+      petDataRef.current[key] = value;
+      if (!isSomeDataChanged) {
+        setIsSomeDataChanged(true);
+      }
+    },
+    [isSomeDataChanged],
+  );
 
   // Handle form submission
   const onSubmit = async (values: MedicalRecordFormValues) => {
@@ -87,6 +129,24 @@ export default function PetDetailPage() {
     }
   };
 
+  const handleSavePet = async () => {
+    if (!selectedPet || !id) {
+      toast.error('Unable to update pet');
+      return;
+    }
+
+    try {
+      await petApi.updatePet(id, petDataRef.current);
+      updatePet(id, petDataRef.current);
+      toast.success('Pet information updated');
+      setIsSomeDataChanged(false);
+      setIsEditMode(false);
+    } catch (error) {
+      console.error('Error updating pet:', error);
+      toast.error('Failed to update pet information');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center p-4 h-64">
@@ -108,7 +168,12 @@ export default function PetDetailPage() {
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col relative">
+      <div className="flex items-center space-x-2 absolute top-0 right-0">
+        <Switch id="edit-mode" checked={isEditMode} onCheckedChange={setIsEditMode} />
+        <Label htmlFor="edit-mode">Edit Mode</Label>
+      </div>
+
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-3xl font-semibold tracking-tight">
           {selectedPet.name}
@@ -124,24 +189,102 @@ export default function PetDetailPage() {
               Pet Information
             </h3>
             <div className="space-y-2">
-              <div className="flex items-center">
-                <span className="font-medium w-28">Breed:</span>
-                <span>{selectedPet.breed}</span>
-              </div>
-              <div className="flex items-center">
-                <span className="font-medium w-28">Birth Date:</span>
-                <span className="flex items-center">
-                  <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
-                  {new Date(selectedPet.birthDate).toLocaleDateString()}
-                </span>
-              </div>
-              <div className="flex items-center">
-                <span className="font-medium w-28">Chip Number:</span>
-                <code className="bg-muted px-2 py-1 rounded font-mono text-xs">
-                  {selectedPet.chipNumber}
-                </code>
-              </div>
+              {isEditMode ? (
+                <>
+                  <div className="flex items-center">
+                    <Label className="font-medium w-28">Name:</Label>
+                    <Input
+                      defaultValue={selectedPet.name}
+                      onChange={(e) => handleChange('name', e.target.value)}
+                      className="max-w-xs"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <Label className="font-medium w-28">Breed:</Label>
+                    <Input
+                      defaultValue={selectedPet.breed}
+                      onChange={(e) => handleChange('breed', e.target.value)}
+                      className="max-w-xs"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <Label className="font-medium w-28">Birth Date:</Label>
+                    <Input
+                      type="date"
+                      defaultValue={selectedPet.birthDate.split('T')[0]}
+                      onChange={(e) => handleChange('birthDate', e.target.value)}
+                      className="max-w-xs"
+                    />
+                  </div>
+                  <div className="flex items-center">
+                    <Label className="font-medium w-28">Chip Number:</Label>
+                    <Input
+                      defaultValue={selectedPet.chipNumber}
+                      onChange={(e) => handleChange('chipNumber', e.target.value)}
+                      className="max-w-xs"
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center">
+                    <span className="font-medium w-28">Breed:</span>
+                    <span>{selectedPet.breed}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-medium w-28">Birth Date:</span>
+                    <span className="flex items-center">
+                      <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                      {new Date(selectedPet.birthDate).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-medium w-28">Chip Number:</span>
+                    <code className="bg-muted px-2 py-1 rounded font-mono text-xs">
+                      {selectedPet.chipNumber}
+                    </code>
+                  </div>
+                </>
+              )}
             </div>
+
+            {isEditMode && (
+              <div className="flex justify-end mt-4">
+                <Button
+                  disabled={!isSomeDataChanged}
+                  variant="outline"
+                  onClick={() => {
+                    if (selectedPet) {
+                      petDataRef.current = {
+                        name: selectedPet.name,
+                        breed: selectedPet.breed,
+                        birthDate: selectedPet.birthDate,
+                        chipNumber: selectedPet.chipNumber,
+                      };
+                    }
+                    setIsSomeDataChanged(false);
+                  }}
+                  className="mr-2">
+                  Сбросить
+                </Button>
+                <AlertModal
+                  isOpen={isOpenAlertModal}
+                  onOpenChange={setIsOpenAlertModal}
+                  title="Вы уверены?"
+                  description="Сохранить изменения информации о питомце?"
+                  buttonApproveText="Сохранить"
+                  buttonCancelText="Отменить"
+                  buttonShowModalText="Сохранить"
+                  onApprove={() => {
+                    handleSavePet();
+                    setIsOpenAlertModal(false);
+                  }}
+                  onCancel={() => {
+                    setIsOpenAlertModal(false);
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
