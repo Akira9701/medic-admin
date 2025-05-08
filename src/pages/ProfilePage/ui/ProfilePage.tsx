@@ -7,7 +7,8 @@ import { IVet } from '@/entities/Vets/types';
 
 const ProfilePage = () => {
   const user = useUserStore((state) => state.user);
-  const isClinic = !!(user as IClinic)?.name;
+  // Check for firstName which is only present in IVet
+  const isClinic = !(user as IVet)?.firstName;
 
   return (
     <div className="relative">

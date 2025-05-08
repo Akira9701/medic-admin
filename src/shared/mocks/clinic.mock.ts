@@ -1,25 +1,15 @@
-import { IClinic } from '@/entities/Clinic/types';
+export const clinicMock = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YTFiYzRlM2Y4ZDljMWYyZTdmOGE5YiIsIm5hbWUiOiLQktC10YLRmtC40L3RgdC60LjQuSAjMSIsImRlc2NyaXB0aW9uIjoi0KHQvtCy0LXRgNC40YLQtSDQstC10YLQtdGA0LjQvdCw0L3QuNGPINC60LvQuNC10L3RgtCw0L3QuNGPINC4INC/0L7Qu9GM0LfQvtCy0LDRgtC10LvRjCDRgdGB0YvQu9C60LgiLCJwaG9uZSI6Iis3OTE2MTIzNDU2NyIsImVtYWlsIjoiY2xpbmljQGV4YW1wbGUuY29tIiwiY2l0eSI6ItCc0L7RgdC60LLQsCIsInN0cmVldCI6ItCU0LXQvdC40L3QsCIsImJ1aWxkaW5nIjoiMTAiLCJwb3N0YWxDb2RlIjoiMTIzNDU2Iiwic2VydmljZXMiOlsi0KHRgtCw0YLRg9GB0YPRgtGB0Y8iLCLQm9Cw0LHRgNCw0YLQvtGH0L3QsNGPIiwi0KDQtdGA0YLQtdGCIl0sImxvZ29VcmwiOiJodHRwczovL2V4YW1wbGUuY29tL2xvZ28ucG5nIiwid29ya2luZ0hvdXJzIjpbItCf0LQt0J3RjDogOTowMC0xODowMCIsItCh0LE6IDEwOjAwLTE1OjAwIl0sInZldHMiOlt7ImlkIjoic3RyaW5nIiwiZmlyc3ROYW1lIjoic3RyaW5nIiwibGFzdE5hbWUiOiJzdHJpbmciLCJzcGVjaWFsaXphdGlvbiI6InN0cmluZyIsImF2YXRhclVybCI6InN0cmluZyJ9XSwiaWF0IjoxNzA2MjA0ODAwLCJleHAiOjE3MDYyOTEyMDB9.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`;
 
-export const clinicMock: IClinic = {
-  id: '65a1bc4e3f8d9c1f2e7f8a9b',
-  name: 'ВетКлиника №1',
-  description: 'Современная ветеринарная клиника с полным спектром услуг',
-  phone: '+79161234567',
-  email: 'clinic@example.com',
-  city: 'Москва',
-  street: 'Ленина',
-  building: '10',
-  postalCode: '123456',
-  services: ['Стационар', 'Лаборатория', 'Рентген'],
-  logoUrl: 'https://example.com/logo.png',
-  workingHours: ['Пн-Пт: 9:00-18:00', 'Сб: 10:00-15:00'],
-  vets: [
-    {
-      id: 'string',
-      firstName: 'string',
-      lastName: 'string',
-      specialization: 'string',
-      avatarUrl: 'string',
-    },
-  ],
+import { decodeJwt } from 'jose';
+
+/**
+ * Decodes the clinic mock JWT token and returns the payload data
+ */
+export const getClinicData = () => {
+  try {
+    return decodeJwt(clinicMock);
+  } catch (error) {
+    console.error('Failed to decode clinic token:', error);
+    return null;
+  }
 };

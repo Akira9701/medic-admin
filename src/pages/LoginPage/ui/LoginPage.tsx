@@ -11,46 +11,81 @@ import { setIsShowLoader } from '@/entities/Auth/model/auth.store';
 import { toast } from 'sonner';
 import authApi from '@/shared/api/auth.api';
 import authToken from '@/shared/localstorage/authToken';
+import { decodeToken, getUserTypeFromToken } from '@/shared/lib/utils/jwt.utils';
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isClinic, setIsClinic] = useState(false);
 
   async function onSubmit(email: string, password: string) {
     setIsLoading(true);
     try {
-      // Assuming an async login function
-      const authResponse = await authApi.login(email, password);
-      const userResponse = await userApi.getUser();
+      // Authenticate user
+      const authResponse = await authApi.login(email, password, isClinic);
+
+      // Set authentication token
       authToken.set(authResponse.token);
-      setUser(userResponse as IClinic | IVet | null);
+
+      // Decode the JWT token
+      const decodedToken = decodeToken(authResponse.token);
+      if (!decodedToken) {
+        throw new Error('Invalid token received');
+      }
+
+      // Determine user type from token
+
       setIsShowLoader(true);
-      toast.success('Login successful');
-      navigate(rootRoute);
-      delay(400).then(() => {
+
+      delay(300)
+        .then(async () => {
+          navigate(rootRoute);
+          const userType = getUserTypeFromToken(authResponse.token);
+          // Set user data directly from token payload when possible
+          if (userType === 'clinic' || userType === 'vet') {
+            // Safe to cast as we've already verified the token structure with getUserTypeFromToken
+            setUser(decodedToken as unknown as IClinic | IVet);
+          } else {
+            // Fallback to API call if token doesn't have enough information
+            const userResponse = await userApi.getUser();
+            setUser(userResponse as IClinic | IVet | null);
+          }
+
+          // Show loader for transition
+          toast.success('Login successful');
+        })
+        .then(() => {
+          // Hide loader after delay
+          delay(400).then(async () => {
+            setIsShowLoader(false);
+          });
+        });
+
+      // Hide loader after delay
+      delay(400).then(async () => {
         setIsShowLoader(false);
       });
-
-      //   const userResponse = await userApi.getUser();
-      //   if (userResponse) {
-      //     setUser(userResponse as IClinic | IVet | null);
-      //   }
-      //   toast(
-      //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-      //       <code className="text-white">{JSON.stringify(values, null, 2)}</code>
-      //     </pre>,
-      //   );
     } catch (error) {
-      console.error('Form submission error', error);
-      toast.error('Failed to submit the form. Please try again.');
+      console.error('Login error', error);
+      toast.error('Failed to login. Please check your credentials and try again.');
     } finally {
       setIsLoading(false);
     }
   }
 
+  // Handle clinic/vet toggle
+  const handleClinicToggle = (checked: boolean) => {
+    setIsClinic(checked);
+  };
+
   return (
     <>
-      <LoginForm isLoading={isLoading} onSubmit={onSubmit} />
+      <LoginForm
+        isLoading={isLoading}
+        onSubmit={onSubmit}
+        isClinic={isClinic}
+        setIsClinic={handleClinicToggle}
+      />
     </>
   );
 }
