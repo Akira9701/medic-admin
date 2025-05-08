@@ -8,7 +8,7 @@ interface IAppointmentComponent {
 
 const Appointment: FC<IAppointmentComponent> = ({ appointment }) => {
   return (
-    <div className="rounded-lg h-fit border border-gray-200 p-5 max-w-sm shadow-sm hover:shadow-md transition-shadow duration-200">
+    <div className="rounded-lg h-fit border border-gray-200 p-5  shadow-sm hover:shadow-md transition-shadow duration-200">
       <div className="flex flex-col space-y-4">
         {/* Заголовок с иконкой */}
         <div className="flex items-center space-x-3">
