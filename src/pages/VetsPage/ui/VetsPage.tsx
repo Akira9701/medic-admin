@@ -5,13 +5,14 @@ import useVetsStore, {
   updateVet,
 } from '@/entities/Vets/model/vets.store';
 import vetsApi from '@/entities/Vets/api';
+import { clinicApi } from '@/entities/Clinic/api/clinic.api';
 import { useEffect } from 'react';
 import { VetsTable } from './components/VetsTable';
 
 const VetsPage = () => {
   const vets = useVetsStore((state) => state.vets);
   useEffect(() => {
-    vetsApi.getVets().then((vets) => {
+    clinicApi.getAllVets().then((vets) => {
       setVets(vets);
     });
   }, []);

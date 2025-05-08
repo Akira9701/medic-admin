@@ -39,7 +39,7 @@ const AlertModal: FC<AlertModalProps> = ({
 }) => {
   const handleOpenChange = (open: boolean) => {
     // Если пытаемся закрыть окно, но идет процесс удаления - не закрываем
-    if (!open && buttonApproveText !== "Удалить") {
+    if (!open && typeof buttonApproveText === 'object') {
       return;
     }
     onOpenChange(open);
@@ -63,7 +63,7 @@ const AlertModal: FC<AlertModalProps> = ({
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onCancel}>{buttonCancelText}</AlertDialogCancel>
           <AlertDialogAction asChild>
-            <Button onClick={handleApprove} disabled={buttonApproveText !== "Удалить"}>
+          <Button onClick={handleApprove} disabled={typeof buttonApproveText === 'object'}>
               {buttonApproveText}
             </Button>
           </AlertDialogAction>

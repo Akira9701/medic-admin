@@ -1,5 +1,5 @@
 import { IVet } from '@/entities/Vets/types';
-import { clinicVetsMock } from '@/shared/mocks/vet.mock';
+import { clinicVetsMock, otherVetsMock } from '@/shared/mocks/vet.mock';
 import { IClinic } from '../types';
 import { clinicMock } from '@/shared/mocks/clinic.mock';
 
@@ -25,6 +25,14 @@ export const clinicApi = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(clinicVetsMock);
+      }, 1000);
+    });
+  },
+
+  getAllVets: async (): Promise<IVet[]> => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(otherVetsMock);
       }, 1000);
     });
   },
