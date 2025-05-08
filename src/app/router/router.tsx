@@ -14,7 +14,7 @@ import RegisterPage from '@/pages/RegisterPage';
 import LoginPage from '@/pages/LoginPage';
 import Root from './root';
 import AppointmentsPage from '@/pages/AppointmentsPage/ui/AppoitmentsPage';
-import ClinicVetsPage from '@/pages/ClinicVetsPage/ui/AllVetsPage';
+import ClinicVetsPage from '@/pages/ClinicVetsPage/ui/ClinicVetsPage';
 
 const router = createBrowserRouter([
   {

@@ -6,8 +6,9 @@ const vetsApi = {
     // const response = await apiInstance.get('/vets');
     // return response.data;
     return new Promise((resolve) => {
+
       setTimeout(() => {
-        resolve([vetMock]);
+        resolve(vetMock);
       }, 1000);
     });
   },
