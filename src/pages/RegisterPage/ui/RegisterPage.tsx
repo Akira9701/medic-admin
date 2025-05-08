@@ -22,6 +22,7 @@ import { setIsShowLoader } from '@/entities/Auth/model/auth.store';
 import { delay } from '@/shared/lib/utils/delay.utils';
 import authApi from '@/shared/api/auth.api';
 import authToken from '@/shared/localstorage/authToken';
+import { decodeToken } from '@/shared/lib/utils/jwt.utils';
 
 // Define validation schema using Zod for Vet
 const vetFormSchema = z
@@ -89,65 +90,20 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       // Register user and get authentication token
-      const authResponse = await authApi.login(values.email, values.password);
+      const authResponse = await authApi.register(values.email, values.password, isClinic);
 
-      // Create properly typed user data
-      let userData: IClinic | IVet;
+      // Set authentication token
+      authToken.set(authResponse.token);
 
-      if (isClinic) {
-        // Create clinic data
-        userData = {
-          id: `clinic-${Date.now()}`,
-          name: values.name,
-          description: '',
-          phone: '',
-          email: values.email,
-          city: '',
-          street: '',
-          building: '',
-          postalCode: '',
-          services: [],
-          logoUrl: '',
-          workingHours: [''],
-          vets: [
-            {
-              id: '',
-              firstName: '',
-              lastName: '',
-              specialization: '',
-              avatarUrl: '',
-            },
-          ],
-        };
-      } else {
-        // Create vet data
-        userData = {
-          id: `vet-${Date.now()}`,
-          firstName: values.name.split(' ')[0] || 'Unknown',
-          lastName: values.name.split(' ').slice(1).join(' ') || '',
-          specialization: '',
-          qualification: '',
-          bio: '',
-          email: values.email,
-          avatarUrl: '',
-          clinic: {
-            id: '',
-            name: '',
-            logoUrl: '',
-          },
-          services: [],
-          address: {
-            city: '',
-            street: '',
-            building: '',
-          },
-        };
+      // Decode the JWT token
+      const decodedToken = decodeToken(authResponse.token);
+      if (!decodedToken) {
+        throw new Error('Invalid token received');
       }
 
-      const createdUser = await userApi.createUser(userData);
+      const createdUser = await userApi.createUser(decodedToken as unknown as IClinic | IVet);
 
       // Set auth token and user data
-      authToken.set(authResponse.token);
       setUser(createdUser);
 
       // Show loader and navigate

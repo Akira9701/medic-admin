@@ -22,7 +22,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       // Authenticate user
-      const authResponse = await authApi.login(email, password);
+      const authResponse = await authApi.login(email, password, isClinic);
 
       // Set authentication token
       authToken.set(authResponse.token);
