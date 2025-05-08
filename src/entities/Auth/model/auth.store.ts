@@ -9,7 +9,6 @@ const useAuthStore = create<IAuthStore>(() => ({
 }));
 
 export const setIsShowLoader = (isShowLoader: boolean) => {
-  console.log('here 4', isShowLoader);
   useAuthStore.setState({ isShowLoader });
 };
 

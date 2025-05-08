@@ -69,14 +69,19 @@ const Root = () => {
         setIsShowLoader(false);
       });
     } else {
-      navigate(rootRoute);
       userApi
         .getUser()
         .then((user) => {
-          setUser<IClinic | IVet | null>(user);
-          delay(100).then(() => {
-            setIsShowLoader(false);
-          });
+          delay(300)
+            .then(() => {
+              navigate(rootRoute);
+              setUser<IClinic | IVet | null>(user);
+            })
+            .then(() => {
+              delay(400).then(() => {
+                setIsShowLoader(false);
+              });
+            });
         })
         .catch(() => {
           setIsShowLoader(false);
@@ -84,7 +89,6 @@ const Root = () => {
         });
     }
   }, []);
-  console.log(isShowLoader);
   return (
     <AuthProvider>
       <Toaster />

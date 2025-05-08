@@ -34,25 +34,35 @@ export default function LoginPage() {
       }
 
       // Determine user type from token
-      const userType = getUserTypeFromToken(authResponse.token);
 
-      // Set user data directly from token payload when possible
-      if (userType === 'clinic' || userType === 'vet') {
-        // Safe to cast as we've already verified the token structure with getUserTypeFromToken
-        setUser(decodedToken as unknown as IClinic | IVet);
-      } else {
-        // Fallback to API call if token doesn't have enough information
-        const userResponse = await userApi.getUser();
-        setUser(userResponse as IClinic | IVet | null);
-      }
-
-      // Show loader for transition
       setIsShowLoader(true);
-      toast.success('Login successful');
-      navigate(rootRoute);
+
+      delay(300)
+        .then(async () => {
+          navigate(rootRoute);
+          const userType = getUserTypeFromToken(authResponse.token);
+          // Set user data directly from token payload when possible
+          if (userType === 'clinic' || userType === 'vet') {
+            // Safe to cast as we've already verified the token structure with getUserTypeFromToken
+            setUser(decodedToken as unknown as IClinic | IVet);
+          } else {
+            // Fallback to API call if token doesn't have enough information
+            const userResponse = await userApi.getUser();
+            setUser(userResponse as IClinic | IVet | null);
+          }
+
+          // Show loader for transition
+          toast.success('Login successful');
+        })
+        .then(() => {
+          // Hide loader after delay
+          delay(400).then(async () => {
+            setIsShowLoader(false);
+          });
+        });
 
       // Hide loader after delay
-      delay(400).then(() => {
+      delay(400).then(async () => {
         setIsShowLoader(false);
       });
     } catch (error) {
