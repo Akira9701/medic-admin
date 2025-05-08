@@ -61,6 +61,8 @@ const Root = () => {
     [isClinic],
   );
 
+  // TODO: пересмотреть авторизацию
+
   useEffect(() => {
     const token = authToken.get();
     if (!token) {
