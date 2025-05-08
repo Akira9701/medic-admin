@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -17,130 +18,82 @@ import {
 import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react';
 
 import { Button } from '@/shared/ui/button';
-import { Checkbox } from '@/shared/ui/checkbox';
-// import {
-//   DropdownMenu,
-//   DropdownMenuCheckboxItem,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/shared/ui/dropdown-menu"
+// import { Checkbox } from '@/shared/ui/checkbox';
+import AlertModal from '@/shared/ui/alert-modal';
+// import { buttonVariants } from '@/shared/ui/button';
+import {
+  DropdownMenu,
+  // DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  // DropdownMenuItem,
+  // DropdownMenuLabel,
+  // DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu"
 import { Input } from '@/shared/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { IVet } from '@/entities/Vets/types';
+import vetsApi from '@/entities/Vets/api';
 // import { updateVet } from "@/entities/Vets/model/vets.store"
 // import { deleteVet } from "@/entities/Vets/model/vets.store"
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const columns: ColumnDef<IVet>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: 'specialization',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className="pl-4">
-          Specialization
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="capitalize pl-4">{row.getValue('specialization')}</div>,
-  },
-  {
-    id: 'name',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      const firstname = row.original.firstName;
-      const lastname = row.original.lastName;
-      return (
-        <div>
-          {firstname} {lastname}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: 'email',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Email
-          <ArrowUpDown />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div>{row.getValue('email')}</div>,
-  },
-  //   {
-  //     id: "actions",
-  //     enableHiding: false,
-  //     cell: ({ row }) => {
-  //       const vet = row.original
+const ActionCell = ({ vet }: { vet: IVet }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  //       return (
-  //         <DropdownMenu>
-  //           <DropdownMenuTrigger>
-  //             <Button variant="ghost" className="h-8 w-8 p-0">
-  //               <span className="sr-only">Open menu</span>
-  //               <MoreHorizontal />
-  //             </Button>
-  //           </DropdownMenuTrigger>
-  //           <DropdownMenuContent align="start" side="left" sideOffset={8} className="min-w-[180px] w-auto">
-  //             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-  //             <DropdownMenuItem
-  //               onClick={() => navigator.clipboard.writeText(vet.id)}
-  //             >
-  //               Copy vet ID
-  //             </DropdownMenuItem>
-  //             <DropdownMenuSeparator />
-  //             <DropdownMenuItem onClick={() => updateVet({ id: vet.id, firstName: "NewFirstName", lastName: "NewLastName" })}>
-  //               Edit vet
-  //             </DropdownMenuItem>
-  //             <DropdownMenuItem onClick={() => deleteVet(vet.id)}>
-  //               Delete vet
-  //             </DropdownMenuItem>
-  //           </DropdownMenuContent>
-  //         </DropdownMenu>
-  //       )
-  //     },
-  //   },
-];
+  const handleAdd = async () => {
+    setIsLoading(true);
+    try {
+      await vetsApi.addVetToClinic(vet.id);
+    } catch (error) {
+      console.error(error);
+    }
+     finally {
+      setIsOpen(false); 
+      setIsLoading(false);
+      //setIsDropdownOpen(false); 
+     }
+  };
+
+  const handleCancel = () => {
+    if (!isLoading) {
+      setIsOpen(false);
+    }
+  };
+
+  return (
+    
+    <DropdownMenu 
+    // open={isDropdownOpen} onOpenChange={setIsDropdownOpen}
+    >
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <AlertModal
+          title="Добавление ветеринара"
+          description={`Вы уверены, что хотите добавить ветеринара ${vet.firstName} ${vet.lastName} в клинику?`}
+          buttonApproveText={isLoading ? <span className="loader" /> : "Добавить"}
+          buttonCancelText="Отмена" 
+          buttonShowModalText="Добавить в клинику"
+          onApprove={handleAdd}
+          onCancel={handleCancel}
+          isOpen={isOpen}
+          onOpenChange={(open) => {
+            if (!isLoading) {
+              setIsOpen(open);
+            }
+          }}
+        />
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 interface VetsTableProps {
   vets: IVet[];
   addVet: (vet: IVet) => void;
@@ -152,6 +105,73 @@ export function VetsTable({ vets }: VetsTableProps) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+
+  const columns: ColumnDef<IVet>[] = [
+    {
+      id: 'select',
+      enableSorting: false,
+      enableHiding: false,
+    },
+    {
+      accessorKey: 'specialization',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="pl-4">
+            Specialization
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => <div className="capitalize pl-4">{row.getValue('specialization')}</div>,
+    },
+    {
+      id: 'name',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        const firstname = row.original.firstName;
+        const lastname = row.original.lastName;
+        return (
+          <div>
+            {firstname} {lastname}
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: 'email',
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
+            Email
+            <ArrowUpDown />
+          </Button>
+        );
+      },
+      cell: ({ row }) => <div>{row.getValue('email')}</div>,
+    },
+    {
+      id: "actions",
+      enableHiding: false,
+      cell: ({ row }) => {
+        const vet = row.original;
+        return <ActionCell vet={vet} />;
+      },
+    },
+  ];
 
   const table = useReactTable({
     data: vets,
