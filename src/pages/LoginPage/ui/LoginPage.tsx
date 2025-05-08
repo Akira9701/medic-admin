@@ -11,6 +11,7 @@ import { setIsShowLoader } from '@/entities/Auth/model/auth.store';
 import { toast } from 'sonner';
 import authApi from '@/shared/api/auth.api';
 import authToken from '@/shared/localstorage/authToken';
+import { decodeToken, getUserTypeFromToken } from '@/shared/lib/utils/jwt.utils';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -23,14 +24,27 @@ export default function LoginPage() {
       // Authenticate user
       const authResponse = await authApi.login(email, password);
 
-      // Retrieve user data
-      const userResponse = await userApi.getUser();
-
       // Set authentication token
       authToken.set(authResponse.token);
 
-      // Set user data based on type (clinic or vet)
-      setUser(userResponse as IClinic | IVet | null);
+      // Decode the JWT token
+      const decodedToken = decodeToken(authResponse.token);
+      if (!decodedToken) {
+        throw new Error('Invalid token received');
+      }
+
+      // Determine user type from token
+      const userType = getUserTypeFromToken(authResponse.token);
+
+      // Set user data directly from token payload when possible
+      if (userType === 'clinic' || userType === 'vet') {
+        // Safe to cast as we've already verified the token structure with getUserTypeFromToken
+        setUser(decodedToken as unknown as IClinic | IVet);
+      } else {
+        // Fallback to API call if token doesn't have enough information
+        const userResponse = await userApi.getUser();
+        setUser(userResponse as IClinic | IVet | null);
+      }
 
       // Show loader for transition
       setIsShowLoader(true);

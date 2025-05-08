@@ -1,5 +1,6 @@
 // import axios from 'axios';
 // import apiInstance from './api.instance';
+import { clinicMock } from '../mocks/clinic.mock';
 
 const authApi = {
   login: async (
@@ -15,7 +16,7 @@ const authApi = {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
-          token: '1234567890',
+          token: clinicMock,
           type: 'Bearer',
         });
       }, 1000);
