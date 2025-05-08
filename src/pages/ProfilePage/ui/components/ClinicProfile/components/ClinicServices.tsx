@@ -11,9 +11,7 @@ const ClinicServices: FC<IClinicServices> = ({ services }) => {
     <div className="flex flex-col gap-2 mt-4">
       <Label>Услуги клиники</Label>
       <div className="flex gap-2">
-        {services.map((service) => (
-          <Badge key={service}>{service}</Badge>
-        ))}
+        {services?.map((service) => <Badge key={service}>{service}</Badge>)}
       </div>
     </div>
   );
