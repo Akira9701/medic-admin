@@ -90,13 +90,18 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       // Register user and get authentication token
-      const authResponse = await authApi.register(values.email, values.password, isClinic);
+      const { token } = await authApi.register(
+        values.email,
+        values.password,
+        values.name,
+        isClinic,
+      );
 
       // Set authentication token
-      authToken.set(authResponse.token);
+      authToken.set(token);
 
       // Decode the JWT token
-      const decodedToken = decodeToken(authResponse.token);
+      const decodedToken = decodeToken(token);
       if (!decodedToken) {
         throw new Error('Invalid token received');
       }

@@ -8,33 +8,41 @@ const authApi = {
   login: async (
     email: string,
     password: string,
-    isClinic: boolean,
   ): Promise<{
     token: string;
     type: 'Bearer';
   }> => {
     // const response = await apiInstance.post('/api/auth/login', { email, password });
     // return response.data;
-    console.log(email, password, isClinic);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          token: isClinic ? clinicMock : vetMock,
-          type: 'Bearer',
-        });
-      }, 1000);
-    });
+    const response = await apiInstance.post('auth/login', { login: email, password });
+    return response.data;
   },
 
   register: async (
     email: string,
     password: string,
+    title: string,
     isClinic: boolean,
   ): Promise<{
     token: string;
   }> => {
-    console.log('register');
-    const response = await apiInstance.post('auth/register', { email, password });
+    let loginData = {};
+    if (isClinic) {
+      loginData = { email, password, title };
+    } else {
+      const name = title.split(' ')[0];
+      const surname = title.split(' ')[1];
+      loginData = {
+        login: email,
+        password,
+        email,
+        name,
+        surname,
+        userType: 'VET_USER_CLINIC',
+      };
+    }
+    console.log('register', loginData);
+    const response = await apiInstance.post('auth/signup', loginData);
     return response.data;
   },
 };
