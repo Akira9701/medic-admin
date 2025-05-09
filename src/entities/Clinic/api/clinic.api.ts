@@ -1,15 +1,12 @@
 import { IVet } from '@/entities/Vets/types';
 import { clinicVetsMock, otherVetsMock } from '@/shared/mocks/vet.mock';
 import { IClinic } from '../types';
-import { clinicMock } from '@/shared/mocks/clinic.mock';
+import apiInstance from '@/shared/api/api.instance';
 
 export const clinicApi = {
-  getClinic: async (): Promise<IClinic> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(clinicMock);
-      }, 1000);
-    });
+  getClinic: async ({ id }: { id: string }): Promise<IClinic> => {
+    const respone = await apiInstance.get<IClinic>(`/profiles/clinics/${id}`);
+    return respone.data;
   },
 
   deleteVetFromClinic: async (clinicId: string, vetId: string): Promise<void> => {
@@ -22,11 +19,8 @@ export const clinicApi = {
   },
 
   getClinicVets: async (clinicId: string): Promise<IVet[]> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(clinicVetsMock);
-      }, 1000);
-    });
+    const response = await apiInstance.get<IVet[]>(`/profiles/vets/by-clinic/${clinicId}`);
+    return response.data;
   },
 
   getAllVets: async (): Promise<IVet[]> => {
@@ -36,4 +30,14 @@ export const clinicApi = {
       }, 1000);
     });
   },
+
+  getAllClinics: async (): Promise<IClinic[]> => {
+    const respone = await apiInstance.get<IClinic[]>('/profiles/clinics/all');
+    return respone.data;
+  },
+  getVetById: async ({ id }: { id: string }): Promise<IVet> => {
+    const response = await apiInstance.get<IVet>(`/profiles/vets/by-clinic/${id}`);
+    return response.data;
+  }
 };
+

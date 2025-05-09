@@ -1,15 +1,10 @@
 import { IVet } from '@/entities/Vets/types';
-import { clinicVetsMock, otherVetsMock } from '@/shared/mocks/vet.mock';
+import apiInstance from '@/shared/api/api.instance';
 
 const vetsApi = {
-  getVets: async (): Promise<IVet[]> => {
-    // const response = await apiInstance.get('/vets');
-    // return response.data;
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([...clinicVetsMock, ...otherVetsMock]);
-      }, 1000);
-    });
+  getVets: async ({ id }: { id: string }): Promise<IVet[]> => {
+    const response = await apiInstance.get<IVet[]>(`/profiles/vets/by-clinic/${id}`);
+    return response.data;
   },
   addVetToClinic: async (vetId: string): Promise<void> => {
     // const response = await apiInstance.post(`/vets/${vetId}/clinic`);
@@ -19,6 +14,19 @@ const vetsApi = {
         resolve();
       }, 1000);
     });
+  },
+  getVetById: async (vetId: string): Promise<IVet> => {
+    // const response = await apiInstance.get(`/vets/${vetId}`);
+    // return response.data;
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(clinicVetsMock.find((vet) => vet.id === vetId) as IVet);
+      }, 1000);
+    });
+  },
+  getAllVets: async (): Promise<IVet[]> => {
+    const response = await apiInstance.get<IVet[]>('/profiles/vets');
+    return response.data;
   },
 };
 

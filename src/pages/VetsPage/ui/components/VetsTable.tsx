@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -40,6 +41,7 @@ import vetsApi from '@/entities/Vets/api';
 const ActionCell = ({ vet }: { vet: IVet }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   // const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleAdd = async () => {
@@ -101,6 +103,7 @@ interface VetsTableProps {
   deleteVet: (id: string) => void;
 }
 export function VetsTable({ vets }: VetsTableProps) {
+  const navigate = useNavigate();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -143,7 +146,7 @@ export function VetsTable({ vets }: VetsTableProps) {
         const firstname = row.original.firstName;
         const lastname = row.original.lastName;
         return (
-          <div>
+          <div className="font-normal">
             {firstname} {lastname}
           </div>
         );
@@ -162,6 +165,21 @@ export function VetsTable({ vets }: VetsTableProps) {
         );
       },
       cell: ({ row }) => <div>{row.getValue('email')}</div>,
+    },
+    {
+      id: "profile",
+      cell: ({ row }) => {
+        const vetId = row.original.id;
+        return (
+          <Button 
+            variant="outline"
+            size="sm"
+            onClick={() => navigate(`/vet/${vetId}`)}
+          >
+            View Profile
+          </Button>
+        );
+      },
     },
     {
       id: "actions",

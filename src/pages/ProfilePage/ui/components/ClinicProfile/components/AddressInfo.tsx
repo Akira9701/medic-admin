@@ -40,17 +40,20 @@ const AddressInfo: FC<IAddresInfo> = ({ address, onChange, isEditMode, isSomeDat
           type="text"
           placeholder="Город"
         />
-        <InputWithLabel
-          disabled={!isEditMode}
-          label="Улица"
-          value={street}
-          onChange={(e) => {
+
+        {address?.street && (
+          <InputWithLabel
+            disabled={!isEditMode}
+            label="Улица"
+            value={street}
+            onChange={(e) => {
             onChange('street', e.target.value);
             setStreet(e.target.value);
           }}
           type="text"
           placeholder="Улица"
-        />
+          />
+        )}
       </div>
       <div className="flex gap-4">
         <InputWithLabel

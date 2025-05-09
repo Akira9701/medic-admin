@@ -25,7 +25,7 @@ import { Dog, Stethoscope } from 'lucide-react';
 import { ClipboardPlus, Hospital } from 'lucide-react';
 import { Home } from 'lucide-react';
 import AuthProvider from '../providers/AuthProvider';
-
+import { allClinicsRoute } from './lib/constants';
 const Root = () => {
   const navigate = useNavigate();
   const isShowLoader = useAuthStore((state) => state.isShowLoader);
@@ -39,8 +39,7 @@ const Root = () => {
         url: profileRoute,
         icon: Home,
       },
-      ...(!isClinic
-        ? [
+      
             {
               title: 'Pets',
               url: petsRoute,
@@ -51,19 +50,21 @@ const Root = () => {
               url: appointmentsRoute,
               icon: Dog,
             },
-          ]
-        : [
             {
               title: 'All Vets',
               url: vetsRoute,
               icon: ClipboardPlus,
             },
             {
+              title: 'All Clinics',
+              url: allClinicsRoute,
+              icon: Hospital,
+            },
+            {
               title: 'Clinic Vets',
               url: clinicVetsRoute,
               icon: Hospital,
             },
-          ]),
     ],
     [isClinic],
   );

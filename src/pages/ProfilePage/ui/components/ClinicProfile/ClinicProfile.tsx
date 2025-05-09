@@ -11,25 +11,20 @@ import { updateUser } from '@/entities/User/model/user.store';
 import TitleInfo from './components/TitleInfo';
 import { ClinicPageChangeHandlerKey } from '@/types/profilePages.types';
 import Services from '../Services/ui/Services';
+import VetsInfo from './components/VetsInfo';
+import { IVet } from '@/entities/Vets/types';
+import { clinicApi } from '@/entities/Clinic/api/clinic.api';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
-interface IClinicProfile {
-  clinic: IClinic;
-}
 
-// interface IInputsData {
-//   name: string;
-//   email: string;
-//   description: string;
-//   city: string;
-//   street: string;
-//   services: string[];
-// }
-
-const ClinicProfile: FC<IClinicProfile> = ({ clinic }) => {
+const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isOpenAlertModal, setIsOpenAlertModal] = useState(false);
   const [services, setServices] = useState<string[]>(clinic?.services || []);
   const [isSomeDataChanged, setIsSomeDataChanged] = useState<boolean>(false);
+  const [clinicVets, setClinicVets] = useState<IVet[] | null>(null);
+
   const userDataRef = useRef<Partial<IClinic>>({
     name: clinic?.name,
     email: clinic?.email,
@@ -50,9 +45,13 @@ const ClinicProfile: FC<IClinicProfile> = ({ clinic }) => {
     [isSomeDataChanged],
   );
 
+  useEffect(() => {
+    clinicApi.getClinicVets(clinic.id).then((vets) => setClinicVets(vets));
+  }, []);
+
   return (
     <>
-      <div className="flex items-center space-x-2 absolute top-0 right-0">
+      <div className="flex items-center space-x-2 absolute top-8 right-6">
         <Switch id="airplane-mode" checked={isEditMode} onCheckedChange={setIsEditMode} />
         <Label htmlFor="airplane-mode">Edit Mode</Label>
       </div>
@@ -82,6 +81,8 @@ const ClinicProfile: FC<IClinicProfile> = ({ clinic }) => {
         }}
         services={clinic?.services}
       />
+      <Separator className="mt-4" />
+      <VetsInfo vets={clinicVets} />
       <Separator className="mt-4" />
       <div className="w-full flex justify-end">
         <Button

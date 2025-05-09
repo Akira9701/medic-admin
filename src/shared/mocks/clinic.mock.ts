@@ -13,3 +13,4 @@ export const getClinicData = () => {
     return null;
   }
 };
+

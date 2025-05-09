@@ -51,9 +51,9 @@ const VetProfile: FC<IVetProfileProps> = ({ vet }) => {
 
   return (
     <>
-      <div className="flex items-center space-x-2 absolute top-0 right-0">
+      <div className="flex items-center space-x-2 absolute top-8 right-6">
         <Switch id="airplane-mode" checked={isEditMode} onCheckedChange={setIsEditMode} />
-        <Label htmlFor="airplane-mode">Режим редактирования</Label>
+        <Label htmlFor="airplane-mode">Edit Mode</Label>
       </div>
       <UserInfo
         specialization={vet?.specialization}

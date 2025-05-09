@@ -36,7 +36,7 @@ apiInstance.interceptors.request.use(async (config) => {
   }
 
   // Add token to headers
-  config.headers.Authorization = `Bearer ${token}`;
+  config.headers.Authorization = ` ${token}`;
   return config;
 });
 
