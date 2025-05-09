@@ -15,14 +15,18 @@ const AuthProvider: FC<IAuthProvider> = ({ children }) => {
   const token = authToken.get();
 
   useEffect(() => {
-    if ((!authRoutes.includes(location.pathname) && !isUser) || !token) {
+    if (
+      (!authRoutes.includes(location.pathname) && !isUser) ||
+      (!token && !authRoutes.includes(location.pathname))
+    ) {
       navigate(loginRoute);
       return;
     }
     if (authRoutes.includes(location.pathname) && isUser) {
       navigate(rootRoute);
+      return;
     }
-  }, [location, isUser, navigate, token]);
+  }, [location]);
 
   return <>{children}</>;
 };

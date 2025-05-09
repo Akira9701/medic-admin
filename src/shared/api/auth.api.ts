@@ -2,6 +2,7 @@
 // import apiInstance from './api.instance';
 import { clinicMock } from '../mocks/clinic.mock';
 import { vetMock } from '../mocks/vet.mock';
+import apiInstance from './api.instance';
 
 const authApi = {
   login: async (
@@ -32,14 +33,9 @@ const authApi = {
   ): Promise<{
     token: string;
   }> => {
-    console.log(email, password, isClinic);
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({
-          token: isClinic ? clinicMock : vetMock,
-        });
-      }, 1000);
-    });
+    console.log('register');
+    const response = await apiInstance.post('auth/register', { email, password });
+    return response.data;
   },
 };
 
