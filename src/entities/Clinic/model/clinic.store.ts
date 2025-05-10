@@ -19,4 +19,5 @@ export const addClinic = (clinic: IClinic) => {
   }));
 };
 
+
 export default useClinicStore;

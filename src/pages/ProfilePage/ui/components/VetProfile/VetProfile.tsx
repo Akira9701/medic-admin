@@ -12,6 +12,7 @@ import { VetPageChangeHandlerKey } from '@/types/profilePages.types';
 import { Button } from '@/shared/ui/button';
 import Services from '../Services/ui/Services';
 import { Link } from 'react-router-dom';
+import vetsApi  from '@/entities/Vets/api/index';
 interface IVetProfileProps {
   vet: IVet;
 }
@@ -27,6 +28,8 @@ const VetProfile: FC<IVetProfileProps> = ({ vet }) => {
     email: vet?.email,
     specialization: vet?.specialization,
     avatarUrl: vet?.avatarUrl,
+    qualification: vet?.qualification,
+    bio: vet?.bio,
   });
 
   const handleChange = useCallback(
@@ -86,9 +89,9 @@ const VetProfile: FC<IVetProfileProps> = ({ vet }) => {
         }}
         services={services}
         removeService={(service) => {
-          console.log(service);
           setServices(services.filter((s) => s !== service));
         }}
+        isEditMode={isEditMode}
       />
       <Separator className="mt-4" />
       <div className="mt-4">
@@ -125,7 +128,6 @@ const VetProfile: FC<IVetProfileProps> = ({ vet }) => {
           Сбросить
         </Button>
         <AlertModal
-          disabledButtonApprove={!isSomeDataChanged}
           isOpen={isOpenAlertModal}
           onOpenChange={setIsOpenAlertModal}
           classNameButton="ml-4 mt-4"
@@ -134,7 +136,8 @@ const VetProfile: FC<IVetProfileProps> = ({ vet }) => {
           buttonApproveText="Сохранить"
           buttonCancelText="Отменить"
           buttonShowModalText="Сохранить"
-          onApprove={() => {
+          onApprove={async () => {
+            await vetsApi.updateVetProfile({ ...userDataRef.current, services, id: vet.id });
             updateUser<IVet>({ ...userDataRef.current, services });
             setIsOpenAlertModal(false);
           }}
