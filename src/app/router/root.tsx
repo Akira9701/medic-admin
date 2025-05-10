@@ -2,14 +2,7 @@ import { Outlet } from 'react-router';
 import { SidebarProvider } from '@/shared/ui/sidebar';
 import { AppSidebar } from '@/shared/ui/appsidebar';
 import { useEffect, useMemo } from 'react';
-import {
-  appointmentsRoute,
-  loginRoute,
-  petsRoute,
-  profileRoute,
-  rootRoute,
-  vetsRoute,
-} from './lib/constants';
+import { appointmentsRoute, loginRoute, petsRoute, rootRoute, vetsRoute } from './lib/constants';
 import { useNavigate } from 'react-router';
 import PageLoader from '@/widgets/PageLoader/ui/PageLoader';
 import useUserStore, { setUser } from '@/entities/User/model/user.store';
@@ -22,7 +15,6 @@ import { Toaster } from 'sonner';
 import authToken from '@/shared/localstorage/authToken';
 import { Dog, Stethoscope } from 'lucide-react';
 import { ClipboardPlus, Hospital } from 'lucide-react';
-import { Home } from 'lucide-react';
 import AuthProvider from '../providers/AuthProvider';
 import { allClinicsRoute } from './lib/constants';
 import { setVets } from '@/entities/Vets/model/vets.store';
@@ -38,12 +30,6 @@ const Root = () => {
 
   const rootItems = useMemo(
     () => [
-      {
-        title: 'Профиль',
-        url: profileRoute,
-        icon: Home,
-      },
-
       {
         title: 'Питомцы',
         url: petsRoute,

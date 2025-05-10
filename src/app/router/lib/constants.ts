@@ -1,8 +1,7 @@
 export const rootRoute = '/';
 export const profileRoute = '/';
 export const vetsRoute = '/vets';
-export const clinicVetsRoute = '/clinic-vets';
-export const allClinicsRoute = '/all-clinics';
+export const allClinicsRoute = '/';
 export const patientsRoute = '/patients';
 export const appointmentsRoute = '/appointments';
 export const appointmentDetailRoute = '/appointment/:id';
