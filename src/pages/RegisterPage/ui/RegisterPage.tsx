@@ -23,6 +23,11 @@ import { delay } from '@/shared/lib/utils/delay.utils';
 import authApi from '@/shared/api/auth.api';
 import authToken from '@/shared/localstorage/authToken';
 import { decodeToken, getUserTypeFromToken } from '@/shared/lib/utils/jwt.utils';
+import { clinicApi } from '@/entities/Clinic/api/clinic.api';
+import vetsApi from '@/entities/Vets/api';
+import { setVets } from '@/entities/Vets/model/vets.store';
+import { fetchPets } from '@/entities/Pet/model/pet.store';
+import { setClinics } from '@/entities/Clinic/model/clinic.store';
 
 // Define validation schema using Zod for Vet
 const vetFormSchema = z
@@ -136,6 +141,11 @@ export default function RegisterPage() {
       // Show loader during navigation
       setIsShowLoader(true);
       navigate(rootRoute);
+      vetsApi.getAllVets().then((vets) => {
+        setVets(vets);
+      });
+      clinicApi.getAllClinics().then((clinics) => setClinics(clinics));
+      fetchPets();
 
       // Hide loader after delay
       delay(400).then(() => {
