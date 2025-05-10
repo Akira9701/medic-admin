@@ -12,6 +12,11 @@ import { toast } from 'sonner';
 import authApi from '@/shared/api/auth.api';
 import authToken from '@/shared/localstorage/authToken';
 import { decodeToken, getUserTypeFromToken } from '@/shared/lib/utils/jwt.utils';
+import { setVets } from '@/entities/Vets/model/vets.store';
+import { fetchPets } from '@/entities/Pet/model/pet.store';
+import vetsApi from '@/entities/Vets/api';
+import clinicApi from '@/entities/Clinic/api/clinic.api';
+import { setClinics } from '@/entities/Clinic/model/clinic.store';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -22,7 +27,7 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       // Authenticate user
-      const authResponse = await authApi.login(email, password, isClinic);
+      const authResponse = await authApi.login(email, password);
 
       // Set authentication token
       authToken.set(authResponse.token);
@@ -32,6 +37,13 @@ export default function LoginPage() {
       if (!decodedToken) {
         throw new Error('Invalid token received');
       }
+      const vets = await vetsApi.getAllVets();
+      setVets(vets);
+
+      const clinics = await clinicApi.getAllClinics();
+      setClinics(clinics);
+
+      await fetchPets();
 
       // Determine user type from token
 
