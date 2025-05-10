@@ -12,6 +12,7 @@ import {
   Trash,
   Check,
   X,
+  FileDown,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import apiInstance from '@/shared/api/api.instance';
@@ -19,6 +20,11 @@ import { IPet } from '@/entities/Pet/types';
 import useAppointmentsStore, {
   updateAppointment,
 } from '@/entities/Appointments/model/appointments.store';
+import {
+  generateAppointmentReport,
+  updateAppointmentStatus,
+  deleteAppointment,
+} from '../api/appointment.api';
 
 const AppointmentDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -28,6 +34,7 @@ const AppointmentDetailPage: FC = () => {
   const [pet, setPet] = useState<IPet | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [generatingReport, setGeneratingReport] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,38 +75,38 @@ const AppointmentDetailPage: FC = () => {
   }, [id, appointments]);
 
   const handleStatusChange = async (newStatus: string) => {
-    try {
-      if (!appointment) return;
+    if (!appointment) return;
 
-      // Update in API
-      await apiInstance.patch(`/appointments/${id}`, { status: newStatus });
+    const success = await updateAppointmentStatus(String(id), newStatus);
 
+    if (success) {
       // Update in store
       updateAppointment(String(appointment.id), { status: newStatus });
 
       // Update local state
       setAppointment((prev) => (prev ? { ...prev, status: newStatus } : null));
-
-      toast.success(`Appointment status changed to ${newStatus}`);
-    } catch {
-      toast.error('Failed to update appointment status');
     }
   };
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this appointment?')) {
-      try {
-        await apiInstance.delete(`/appointments/${id}`);
-        toast.success('Appointment deleted successfully');
+      const success = await deleteAppointment(String(id));
+      if (success) {
         navigate('/appointments');
-      } catch {
-        toast.error('Failed to delete appointment');
       }
     }
   };
 
   const handleBack = () => {
     navigate('/appointments');
+  };
+
+  const handleGenerateReport = async () => {
+    if (!appointment?.petId) return;
+
+    setGeneratingReport(true);
+    await generateAppointmentReport(appointment.petId);
+    setGeneratingReport(false);
   };
 
   if (loading) {
@@ -270,6 +277,22 @@ const AppointmentDetailPage: FC = () => {
                 </div>
               </div>
             )}
+
+            {/* Generate Report Button */}
+            <div className="flex items-start space-x-4 pt-4">
+              <div className="p-3 rounded-lg bg-gray-50 text-gray-600">
+                <FileDown className="h-6 w-6" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold mb-2">Report</h2>
+                <Button
+                  onClick={handleGenerateReport}
+                  disabled={generatingReport || !appointment.petId}
+                  className="flex items-center gap-2">
+                  {generatingReport ? 'Generating...' : 'Generate Report'}
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
