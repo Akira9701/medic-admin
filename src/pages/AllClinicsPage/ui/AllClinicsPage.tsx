@@ -23,7 +23,9 @@ const AllClinicsPage = () => {
   };
 
   useEffect(() => {
-    clinicApi.getAllClinics().then((clinics) => setClinics(clinics));
+    if (!clinics || clinics.length === 0) {
+      clinicApi.getAllClinics().then((clinics) => setClinics(clinics));
+    }
   }, []);
 
   return (

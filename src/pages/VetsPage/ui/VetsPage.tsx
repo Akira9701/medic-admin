@@ -24,9 +24,11 @@ const VetsPage = () => {
   };
 
   useEffect(() => {
-    vetsApi.getAllVets().then((vets) => {
-      setVets(vets);
-    });
+    if (!vets || vets.length === 0) {
+      vetsApi.getAllVets().then((vets) => {
+        setVets(vets);
+      });
+    }
   }, []);
   console.log(vets);
 

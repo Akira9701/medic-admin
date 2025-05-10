@@ -25,6 +25,10 @@ import { ClipboardPlus, Hospital } from 'lucide-react';
 import { Home } from 'lucide-react';
 import AuthProvider from '../providers/AuthProvider';
 import { allClinicsRoute } from './lib/constants';
+import { setVets } from '@/entities/Vets/model/vets.store';
+import vetsApi from '@/entities/Vets/api';
+import { clinicApi } from '@/entities/Clinic/api/clinic.api';
+import { setClinics } from '@/entities/Clinic/model/clinic.store';
 const Root = () => {
   const navigate = useNavigate();
   const isShowLoader = useAuthStore((state) => state.isShowLoader);
@@ -80,6 +84,10 @@ const Root = () => {
             .then(() => {
               navigate(rootRoute);
               setUser<IClinic | IVet | null>(user);
+              vetsApi.getAllVets().then((vets) => {
+                setVets(vets);
+              });
+              clinicApi.getAllClinics().then((clinics) => setClinics(clinics));
             })
             .then(() => {
               delay(400).then(() => {

@@ -28,7 +28,7 @@ import { Input } from '@/shared/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { IAppointment } from '@/entities/Appointments/types';
 import { toast } from 'sonner';
-
+import { AppointmentStatus } from '@/entities/Appointments/types';
 interface AppointmentsTableProps {
   appointments: IAppointment[];
 }
@@ -40,7 +40,7 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const handleStatusChange = (appointment: IAppointment, newStatus: string) => {
+  const handleStatusChange = (appointment: IAppointment, newStatus: AppointmentStatus) => {
     // Here you would call your API to update the appointment status
     toast.success(`Appointment status changed to ${newStatus}`);
   };
@@ -133,11 +133,11 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
         return (
           <div
             className={`font-medium ${
-              status === 'active'
+              status === AppointmentStatus.BOOKED || status === AppointmentStatus.CONFIRMED
                 ? 'text-green-600'
-                : status === 'cancelled'
+                : status === AppointmentStatus.CANCELLED
                   ? 'text-red-600'
-                  : status === 'completed'
+                  : status === AppointmentStatus.COMPLETED
                     ? 'text-blue-600'
                     : 'text-gray-600'
             }`}>
@@ -168,13 +168,20 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
                 View Details
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleStatusChange(appointment, 'active')}>
-                Mark as Active
+              <DropdownMenuItem
+                onClick={() => handleStatusChange(appointment, AppointmentStatus.BOOKED)}>
+                Mark as Booked
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleStatusChange(appointment, 'completed')}>
+              <DropdownMenuItem
+                onClick={() => handleStatusChange(appointment, AppointmentStatus.CONFIRMED)}>
+                Mark as Confirmed
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleStatusChange(appointment, AppointmentStatus.COMPLETED)}>
                 Mark as Completed
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleStatusChange(appointment, 'cancelled')}>
+              <DropdownMenuItem
+                onClick={() => handleStatusChange(appointment, AppointmentStatus.CANCELLED)}>
                 Mark as Cancelled
               </DropdownMenuItem>
             </DropdownMenuContent>

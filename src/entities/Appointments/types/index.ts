@@ -1,4 +1,4 @@
-interface IAppointment {
+export interface IAppointment {
   id: number;
   vetId: string;
   petId: string;
@@ -8,4 +8,9 @@ interface IAppointment {
   notes: string;
 }
 
-export type { IAppointment };
+export enum AppointmentStatus {
+  BOOKED = 'BOOKED',
+  CONFIRMED = 'CONFIRMED',
+  COMPLETED = 'COMPLETED',
+  CANCELLED = 'CANCELLED',
+}
