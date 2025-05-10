@@ -25,7 +25,7 @@ apiInstance.interceptors.request.use(async (config) => {
     try {
       // For a real implementation, call refresh token endpoint
       // For now, we'll redirect to login
-      toast.error('Your session has expired. Please log in again.');
+      toast.error('Срок действия вашей сессии истек. Пожалуйста, войдите снова.');
       authToken.remove();
       window.location.href = '/login';
       return Promise.reject('Token expired');
@@ -60,7 +60,7 @@ apiInstance.interceptors.response.use(
       try {
         // In a real app, this would call an actual refresh token endpoint
         // For now, we'll just redirect to login
-        toast.error('Authentication failed. Please log in again.');
+        toast.error('Ошибка аутентификации. Пожалуйста, войдите снова.');
         authToken.remove();
         window.location.href = '/login';
         return Promise.reject('Authentication failed');

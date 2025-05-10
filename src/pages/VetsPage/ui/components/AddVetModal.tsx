@@ -75,7 +75,7 @@ const AddVetModal = ({ isOpen, onOpenChange, onAddVet }: AddVetModalProps) => {
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent className="sm:max-w-md">
         <AlertDialogHeader>
-          <AlertDialogTitle>Add New Vet</AlertDialogTitle>
+          <AlertDialogTitle>Добавить нового ветеринара</AlertDialogTitle>
         </AlertDialogHeader>
 
         <Form {...form}>
@@ -86,9 +86,9 @@ const AddVetModal = ({ isOpen, onOpenChange, onAddVet }: AddVetModalProps) => {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel>Имя</FormLabel>
                     <FormControl>
-                      <Input placeholder="First name" {...field} />
+                      <Input placeholder="Имя" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -100,9 +100,9 @@ const AddVetModal = ({ isOpen, onOpenChange, onAddVet }: AddVetModalProps) => {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel>Фамилия</FormLabel>
                     <FormControl>
-                      <Input placeholder="Last name" {...field} />
+                      <Input placeholder="Фамилия" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -115,9 +115,9 @@ const AddVetModal = ({ isOpen, onOpenChange, onAddVet }: AddVetModalProps) => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Эл. почта</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="Email address" {...field} />
+                    <Input type="email" placeholder="Адрес эл. почты" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -129,9 +129,9 @@ const AddVetModal = ({ isOpen, onOpenChange, onAddVet }: AddVetModalProps) => {
               name="specialization"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Specialization</FormLabel>
+                  <FormLabel>Специализация</FormLabel>
                   <FormControl>
-                    <Input placeholder="Specialization" {...field} />
+                    <Input placeholder="Специализация" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -143,9 +143,9 @@ const AddVetModal = ({ isOpen, onOpenChange, onAddVet }: AddVetModalProps) => {
               name="qualification"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Qualification</FormLabel>
+                  <FormLabel>Квалификация</FormLabel>
                   <FormControl>
-                    <Input placeholder="Qualification" {...field} />
+                    <Input placeholder="Квалификация" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -157,9 +157,9 @@ const AddVetModal = ({ isOpen, onOpenChange, onAddVet }: AddVetModalProps) => {
               name="bio"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Bio</FormLabel>
+                  <FormLabel>О себе</FormLabel>
                   <FormControl>
-                    <Input placeholder="Short bio" {...field} />
+                    <Input placeholder="Краткая биография" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -168,11 +168,11 @@ const AddVetModal = ({ isOpen, onOpenChange, onAddVet }: AddVetModalProps) => {
 
             <AlertDialogFooter>
               <AlertDialogCancel disabled={isLoading} onClick={() => form.reset()}>
-                Cancel
+                Отмена
               </AlertDialogCancel>
               <AlertDialogAction asChild>
                 <Button type="submit" disabled={isLoading}>
-                  {isLoading ? <span className="loader" /> : 'Add Vet'}
+                  {isLoading ? <span className="loader" /> : 'Добавить ветеринара'}
                 </Button>
               </AlertDialogAction>
             </AlertDialogFooter>

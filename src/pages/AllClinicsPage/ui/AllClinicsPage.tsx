@@ -18,7 +18,7 @@ const AllClinicsPage = () => {
     // For now, we'll just update the store
     clinicApi.createClinic(newClinic).then((clinic) => {
       addClinic(clinic);
-      toast.success('Clinic added successfully');
+      toast.success('Клиника успешно добавлена');
     });
   };
 
@@ -32,11 +32,11 @@ const AllClinicsPage = () => {
     <div className="w-full h-full relative">
       <div className="border-b mb-2 flex justify-between items-center">
         <h2 className="mt-10 mb-3 scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-          All Clinics
+          Все клиники
         </h2>
         <Button onClick={() => setIsAddModalOpen(true)}>
           <PlusIcon className="w-4 h-4 mr-2" />
-          Add Clinic
+          Добавить клинику
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-[calc(100vh-140px)] overflow-y-auto">
@@ -51,7 +51,7 @@ const AllClinicsPage = () => {
             </Link>
           ))
         ) : (
-          <p className="col-span-full text-center text-gray-500">No clinics found</p>
+          <p className="col-span-full text-center text-gray-500">Клиники не найдены</p>
         )}
       </div>
 

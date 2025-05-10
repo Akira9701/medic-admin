@@ -49,7 +49,7 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
 
   const handleStatusChange = (appointment: IAppointment, newStatus: AppointmentStatus) => {
     // Here you would call your API to update the appointment status
-    toast.success(`Appointment status changed to ${newStatus}`);
+    toast.success(`Статус приема изменен на ${newStatus}`);
   };
 
   const handleViewDetails = (appointment: IAppointment) => {
@@ -75,7 +75,7 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="pl-4">
-            Pet
+            Питомец
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -92,7 +92,7 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            Vet
+            Ветеринар
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -109,7 +109,7 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            Date & Time
+            Дата и время
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -146,7 +146,7 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            Status
+            Статус
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -179,7 +179,7 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">Открыть меню</span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -188,24 +188,24 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
                 onClick={() => handleViewDetails(appointment)}
                 className="cursor-pointer flex items-center">
                 <ExternalLink className="mr-2 h-4 w-4" />
-                View Details
+                Просмотр деталей
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => handleStatusChange(appointment, AppointmentStatus.BOOKED)}>
-                Mark as Booked
+                Отметить как забронировано
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleStatusChange(appointment, AppointmentStatus.CONFIRMED)}>
-                Mark as Confirmed
+                Отметить как подтверждено
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleStatusChange(appointment, AppointmentStatus.COMPLETED)}>
-                Mark as Completed
+                Отметить как завершено
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleStatusChange(appointment, AppointmentStatus.CANCELLED)}>
-                Mark as Cancelled
+                Отметить как отменено
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -248,7 +248,7 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
     <div className="w-full">
       <div className="flex items-center pb-4">
         <Input
-          placeholder="Filter by pet name..."
+          placeholder="Фильтр по имени питомца..."
           value={(table.getColumn('petId')?.getFilterValue() as string) ?? ''}
           onChange={(event) => filterPetsByName(event.target.value)}
           className="max-w-sm"
@@ -287,7 +287,7 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No appointments found.
+                  Приемы не найдены.
                 </TableCell>
               </TableRow>
             )}
@@ -296,8 +296,8 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} of{' '}
-          {table.getFilteredRowModel().rows.length} row(s) selected.
+          {table.getFilteredSelectedRowModel().rows.length} из{' '}
+          {table.getFilteredRowModel().rows.length} строк(и) выбрано.
         </div>
         <div className="space-x-2">
           <Button
@@ -305,14 +305,14 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}>
-            Previous
+            Предыдущая
           </Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}>
-            Next
+            Следующая
           </Button>
         </div>
       </div>

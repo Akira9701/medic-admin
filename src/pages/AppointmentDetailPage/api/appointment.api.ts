@@ -21,11 +21,11 @@ export const generateAppointmentReport = async (petId: number | string): Promise
     fileLink.click();
     document.body.removeChild(fileLink);
 
-    toast.success('Report downloaded successfully');
+    toast.success('Отчет успешно загружен');
     return true;
   } catch (error) {
     console.error('Error generating report:', error);
-    toast.error('Failed to generate report');
+    toast.error('Не удалось сгенерировать отчет');
     return false;
   }
 };
@@ -37,11 +37,11 @@ export const updateAppointmentStatus = async (
 ): Promise<boolean> => {
   try {
     await apiInstance.patch(`/appointments/${appointmentId}`, { status: newStatus });
-    toast.success(`Appointment status changed to ${newStatus}`);
+    toast.success(`Статус приема изменен на ${newStatus}`);
     return true;
   } catch (error) {
     console.error('Error updating appointment status:', error);
-    toast.error('Failed to update appointment status');
+    toast.error('Не удалось обновить статус приема');
     return false;
   }
 };
@@ -50,11 +50,11 @@ export const updateAppointmentStatus = async (
 export const deleteAppointment = async (appointmentId: string): Promise<boolean> => {
   try {
     await apiInstance.delete(`/appointments/${appointmentId}`);
-    toast.success('Appointment deleted successfully');
+    toast.success('Прием успешно удален');
     return true;
   } catch (error) {
     console.error('Error deleting appointment:', error);
-    toast.error('Failed to delete appointment');
+    toast.error('Не удалось удалить прием');
     return false;
   }
 };

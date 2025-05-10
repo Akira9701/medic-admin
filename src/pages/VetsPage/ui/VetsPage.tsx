@@ -19,7 +19,7 @@ const VetsPage = () => {
   const handleAddVet = (newVet: IVet) => {
     vetsApi.createVet(newVet).then((vet) => {
       addVet(vet);
-      toast.success('Vet added successfully');
+      toast.success('Ветеринар успешно добавлен');
     });
   };
 
@@ -36,11 +36,11 @@ const VetsPage = () => {
     <>
       <div className="border-b mb-2 flex justify-between items-center">
         <h2 className="mt-10 mb-3 scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-          All Vets
+          Все ветеринары
         </h2>
         <Button onClick={() => setIsAddModalOpen(true)}>
           <PlusIcon className="w-4 h-4 mr-2" />
-          Add Vet
+          Добавить ветеринара
         </Button>
       </div>
 

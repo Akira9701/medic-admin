@@ -12,11 +12,11 @@ export const saveTestResult = async (
       testData,
     );
 
-    toast.success('Test results saved successfully');
+    toast.success('Результаты анализов успешно сохранены');
     return response.data;
   } catch (error) {
     console.error('Failed to save test results:', error);
-    toast.error('Failed to save test results');
+    toast.error('Не удалось сохранить результаты анализов');
     return null;
   }
 };

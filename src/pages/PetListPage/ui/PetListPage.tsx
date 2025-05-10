@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import usePetStore from '@/entities/Pet/model/pet.store';
-import { fetchPets, setSelectedPet } from '@/entities/Pet/model/pet.store';
+import { setSelectedPet } from '@/entities/Pet/model/pet.store';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { LoaderPinwheel, Search } from 'lucide-react';
@@ -24,7 +24,7 @@ export default function PetListPage() {
     <>
       <div className="relative flex justify-between items-center border-b mb-3">
         <h2 className="mt-10 scroll-m-20 pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-          Pets
+          Питомцы
         </h2>
       </div>
 
@@ -34,7 +34,7 @@ export default function PetListPage() {
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Filter by name..."
+                placeholder="Поиск по имени..."
                 value={nameFilter}
                 onChange={(event) => setNameFilter(event.target.value)}
                 className="pl-8"
@@ -48,16 +48,16 @@ export default function PetListPage() {
                 <LoaderPinwheel className="animate-spin" />
               </div>
             ) : filteredPets.length === 0 ? (
-              <div className="text-center p-6">No pets found.</div>
+              <div className="text-center p-6">Питомцы не найдены.</div>
             ) : (
               <div className="w-full">
                 {/* Header */}
                 <div className="grid grid-cols-5 border-b bg-muted/50">
-                  <div className="h-10 px-4 flex items-center font-medium">Name</div>
-                  <div className="h-10 px-4 flex items-center font-medium">Type</div>
-                  <div className="h-10 px-4 flex items-center font-medium">Breed</div>
-                  <div className="h-10 px-4 flex items-center font-medium">Chip Number</div>
-                  <div className="h-10 px-4 flex items-center font-medium">Actions</div>
+                  <div className="h-10 px-4 flex items-center font-medium">Имя</div>
+                  <div className="h-10 px-4 flex items-center font-medium">Тип</div>
+                  <div className="h-10 px-4 flex items-center font-medium">Порода</div>
+                  <div className="h-10 px-4 flex items-center font-medium">Номер чипа</div>
+                  <div className="h-10 px-4 flex items-center font-medium">Действия</div>
                 </div>
 
                 {/* Rows */}
@@ -72,7 +72,7 @@ export default function PetListPage() {
                     <div className="p-4 flex items-center">
                       <Link to={`/pets/${pet.id}`}>
                         <Button variant="outline" size="sm" onClick={() => setSelectedPet(pet)}>
-                          View
+                          Просмотр
                         </Button>
                       </Link>
                     </div>

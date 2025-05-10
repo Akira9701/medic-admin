@@ -13,7 +13,7 @@ export const fetchPetDetails = async (petId: string | number): Promise<IPet | nu
     return response.data;
   } catch (error) {
     console.error('Failed to fetch pet details:', error);
-    toast.error('Failed to load pet information');
+    toast.error('Не удалось загрузить информацию о питомце');
     return null;
   }
 };

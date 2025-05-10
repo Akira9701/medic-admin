@@ -39,28 +39,28 @@ const Root = () => {
   const rootItems = useMemo(
     () => [
       {
-        title: 'Profile',
+        title: 'Профиль',
         url: profileRoute,
         icon: Home,
       },
 
       {
-        title: 'Pets',
+        title: 'Питомцы',
         url: petsRoute,
         icon: Stethoscope,
       },
       {
-        title: 'Appointments',
+        title: 'Приемы',
         url: appointmentsRoute,
         icon: Dog,
       },
       {
-        title: 'All Vets',
+        title: 'Все ветеринары',
         url: vetsRoute,
         icon: ClipboardPlus,
       },
       {
-        title: 'All Clinics',
+        title: 'Все клиники',
         url: allClinicsRoute,
         icon: Hospital,
       },

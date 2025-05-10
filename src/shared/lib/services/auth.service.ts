@@ -73,7 +73,7 @@ export const AuthService = {
         return true;
       } catch (error) {
         console.error('Failed to refresh token:', error);
-        toast.error('Your session has expired. Please log in again.');
+        toast.error('Срок действия вашей сессии истек. Пожалуйста, войдите снова.');
         AuthService.logout();
         return false;
       }

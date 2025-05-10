@@ -30,7 +30,7 @@ import {
   // DropdownMenuLabel,
   // DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/shared/ui/dropdown-menu"
+} from '@/shared/ui/dropdown-menu';
 import { Input } from '@/shared/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { IVet } from '@/entities/Vets/types';
@@ -50,12 +50,11 @@ const ActionCell = ({ vet }: { vet: IVet }) => {
       await vetsApi.addVetToClinic(vet.id);
     } catch (error) {
       console.error(error);
-    }
-     finally {
-      setIsOpen(false); 
+    } finally {
+      setIsOpen(false);
       setIsLoading(false);
-      //setIsDropdownOpen(false); 
-     }
+      //setIsDropdownOpen(false);
+    }
   };
 
   const handleCancel = () => {
@@ -65,8 +64,7 @@ const ActionCell = ({ vet }: { vet: IVet }) => {
   };
 
   return (
-    
-    <DropdownMenu 
+    <DropdownMenu
     // open={isDropdownOpen} onOpenChange={setIsDropdownOpen}
     >
       <DropdownMenuTrigger asChild>
@@ -79,8 +77,8 @@ const ActionCell = ({ vet }: { vet: IVet }) => {
         <AlertModal
           title="Добавление ветеринара"
           description={`Вы уверены, что хотите добавить ветеринара ${vet.firstName} ${vet.lastName} в клинику?`}
-          buttonApproveText={isLoading ? <span className="loader" /> : "Добавить"}
-          buttonCancelText="Отмена" 
+          buttonApproveText={isLoading ? <span className="loader" /> : 'Добавить'}
+          buttonCancelText="Отмена"
           buttonShowModalText="Добавить в клинику"
           onApprove={handleAdd}
           onCancel={handleCancel}
@@ -123,7 +121,7 @@ export function VetsTable({ vets }: VetsTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="pl-4">
-            Specialization
+            Специализация
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -137,7 +135,7 @@ export function VetsTable({ vets }: VetsTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            Name
+            Имя
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -159,7 +157,7 @@ export function VetsTable({ vets }: VetsTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            Email
+            Эл. почта
             <ArrowUpDown />
           </Button>
         );
@@ -167,22 +165,18 @@ export function VetsTable({ vets }: VetsTableProps) {
       cell: ({ row }) => <div>{row.getValue('email')}</div>,
     },
     {
-      id: "profile",
+      id: 'profile',
       cell: ({ row }) => {
         const vetId = row.original.id;
         return (
-          <Button 
-            variant="outline"
-            size="sm"
-            onClick={() => navigate(`/vet/${vetId}`)}
-          >
-            View Profile
+          <Button variant="outline" size="sm" onClick={() => navigate(`/vet/${vetId}`)}>
+            Просмотр профиля
           </Button>
         );
       },
     },
     {
-      id: "actions",
+      id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
         const vet = row.original;
@@ -214,7 +208,7 @@ export function VetsTable({ vets }: VetsTableProps) {
     <div className="w-full">
       <div className="flex items-center pb-4">
         <Input
-          placeholder="Filter by name..."
+          placeholder="Фильтр по имени..."
           value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
           onChange={(event) => table.getColumn('name')?.setFilterValue(event.target.value)}
           className="max-w-sm"
