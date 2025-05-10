@@ -11,7 +11,7 @@ import { updateUser } from '@/entities/User/model/user.store';
 import { VetPageChangeHandlerKey } from '@/types/profilePages.types';
 import { Button } from '@/shared/ui/button';
 import Services from '../Services/ui/Services';
-
+import { Link } from 'react-router-dom';
 interface IVetProfileProps {
   vet: IVet;
 }
@@ -90,6 +90,31 @@ const VetProfile: FC<IVetProfileProps> = ({ vet }) => {
           setServices(services.filter((s) => s !== service));
         }}
       />
+      <Separator className="mt-4" />
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold mb-4">Current Workplace</h3>
+        {vet?.clinic ? (
+          <Link to={`/clinic/${vet.clinic.id}`}>
+            <div className="p-4 border rounded-lg hover:shadow-md transition-shadow duration-200 cursor-pointer">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-full overflow-hidden">
+                  <img
+                    src={vet.clinic?.logoUrl}
+                    alt={vet.clinic?.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div>
+                  <p className="font-medium text-gray-900">{vet.clinic?.name}</p>
+                  <p className="text-sm text-gray-500">{vet.clinic?.address}</p>
+                </div>
+              </div>
+            </div>
+          </Link>
+        ) : (
+          <p className="text-gray-500">No clinic assigned</p>
+        )}
+      </div>
       <Separator className="my-4" />
       <div className="w-full flex justify-end">
         <Button

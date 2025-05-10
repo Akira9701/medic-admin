@@ -29,20 +29,12 @@ const VetDetailPage = () => {
         setIsLoading(true);
         const vetId = location.pathname.split('/').pop() as string;
         
-        // Get all clinics first
-        const clinics = await clinicApi.getAllClinics();
-        console.log("clinics = ", clinics);
-        // For each clinic, get its vets and check if our vet is there
-        for (const clinic of clinics) {
-          const clinicVets = await clinicApi.getClinicVets(clinic.id);
-          console.log("clinicVets = ", clinicVets);
-          const foundVet = clinicVets.find(v => v.id === vetId);
-          console.log("foundVet = ", foundVet);
-          if (foundVet) {
-            const foundVet1 = await clinicApi.getVetById({ id: location.pathname.split('/').pop() as string });
-            setVet(foundVet1);
-            break;
-          }
+        // Get all vets and find the one with matching ID
+        const allVets = await vetsApi.getAllVets();
+        const foundVet = allVets.find(v => v.id === vetId);
+        
+        if (foundVet) {
+          setVet(foundVet);
         }
       } catch (error) {
         console.error('Error loading vet:', error);

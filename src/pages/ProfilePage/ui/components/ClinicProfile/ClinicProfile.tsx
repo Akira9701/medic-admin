@@ -15,6 +15,7 @@ import VetsInfo from './components/VetsInfo';
 import { IVet } from '@/entities/Vets/types';
 import { clinicApi } from '@/entities/Clinic/api/clinic.api';
 import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 
@@ -82,8 +83,35 @@ const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
         services={clinic?.services}
       />
       <Separator className="mt-4" />
-      <VetsInfo vets={clinicVets} />
+      <div className="mt-4">
+        <h3 className="text-lg font-semibold mb-4">Clinic Doctors</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {clinicVets?.map((vet) => (
+            <Link key={vet.id} to={`/vet/${vet.id}`}>
+              <div className="p-4 border rounded-lg hover:shadow-md transition-shadow duration-200 cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-full overflow-hidden">
+                    <img 
+                      src={vet.avatarUrl} 
+                      alt={`${vet.firstName} ${vet.lastName}`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-900">
+                      {vet.firstName} {vet.lastName}
+                    </p>
+                    <p className="text-sm text-gray-500">{vet.specialization}</p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
       <Separator className="mt-4" />
+      <VetsInfo vets={clinicVets} />
+    
       <div className="w-full flex justify-end">
         <Button
           disabled={!isSomeDataChanged}

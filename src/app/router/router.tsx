@@ -13,6 +13,7 @@ import {
   allClinicsRoute,
   clinicDetailRoute,
   vetDetailRoute,
+  addClinicRoute,
 } from './lib/constants';
 import VetsPage from '@/pages/VetsPage';
 import RegisterPage from '@/pages/RegisterPage';
@@ -25,7 +26,7 @@ import PetDetailPage from '@/pages/PetDetailPage/ui/PetDetailPage';
 import AllClinicsPage from '@/pages/AllClinicsPage/ui/AllClinicsPage';
 import ClinicDetailPage from '@/pages/ClinicDetailPage/ui/ClinicDetailPage';
 import VetDetailPage from '@/pages/VetDetailPage/ui/VetDetailPage';
-
+import AddClinicPage from '@/pages/AddClinicPage/ui/AddClinicPage';
 const router = createBrowserRouter([
   {
     path: rootRoute,
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
       {
         path: vetDetailRoute,
         element: <VetDetailPage />,
+      },
+      {
+        path: addClinicRoute,
+        element: <AddClinicPage />,
       },
     ],
   },

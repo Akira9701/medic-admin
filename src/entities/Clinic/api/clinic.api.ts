@@ -1,5 +1,4 @@
 import { IVet } from '@/entities/Vets/types';
-import { clinicVetsMock, otherVetsMock } from '@/shared/mocks/vet.mock';
 import { IClinic } from '../types';
 import apiInstance from '@/shared/api/api.instance';
 

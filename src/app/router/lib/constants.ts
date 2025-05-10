@@ -19,3 +19,5 @@ export const petsRoute = '/pets';
 export const petDetailRoute = '/pets/:id';
 
 export const authRoutes = [loginRoute, registerRoute];
+
+export const addClinicRoute = '/add-clinic';
