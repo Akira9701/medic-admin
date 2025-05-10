@@ -35,4 +35,10 @@ export const clinicApi = {
     const response = await apiInstance.get<IVet>(`/profiles/vets/by-clinic/${id}`);
     return response.data;
   },
+  updateClinicProfile: async (clinic: IClinic): Promise<IClinic> => {
+    const response = await apiInstance.put(`/profiles/clinics/${clinic.id}`, clinic);
+    return response.data;
+  },
 };
+
+export default clinicApi;

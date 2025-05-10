@@ -32,6 +32,14 @@ const vetsApi = {
     const response = await apiInstance.get<IVet[]>('/profiles/vets');
     return response.data;
   },
+  addServiceToVet: async (vetId: string, service: string): Promise<void> => {
+    const response = await apiInstance.post(`/profiles/vets/${vetId}/services`, { service });
+    return response.data;
+  },
+  updateVetProfile: async (vet: IVet): Promise<IVet> => {
+    const response = await apiInstance.put(`/profiles/vets/${vet.id}`, vet);
+    return response.data;
+  },
 };
 
 export default vetsApi;
