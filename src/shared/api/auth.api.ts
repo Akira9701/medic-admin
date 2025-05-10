@@ -38,7 +38,7 @@ const authApi = {
         email,
         name,
         surname,
-        userType: 'VET_USER_CLINIC',
+        userType: 'ADMIN',
       };
     }
     console.log('register', loginData);

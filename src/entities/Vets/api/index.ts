@@ -6,6 +6,10 @@ const vetsApi = {
     const response = await apiInstance.get<IVet[]>(`/profiles/vets/by-clinic/${id}`);
     return response.data;
   },
+  createVet: async (vet: IVet): Promise<IVet> => {
+    const response = await apiInstance.post('/profiles/vets', vet);
+    return response.data;
+  },
   addVetToClinic: async (vetId: string): Promise<void> => {
     // const response = await apiInstance.post(`/vets/${vetId}/clinic`);
     // return response.data;
