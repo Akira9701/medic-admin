@@ -16,7 +16,6 @@ import {
   TestTube,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import apiInstance from '@/shared/api/api.instance';
 import { IPet } from '@/entities/Pet/types';
 import useAppointmentsStore, {
   updateAppointment,
@@ -27,6 +26,7 @@ import {
   deleteAppointment,
 } from '../api/appointment.api';
 import { saveTestResult } from '../api/test-result.api';
+import { fetchPetDetails } from '../api/pet.api';
 import { TestResultRequest, TestResultResponse } from '../types';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
@@ -77,21 +77,27 @@ const AppointmentDetailPage: FC = () => {
         // Fetch pet details if needed
         if (foundAppointment.petId) {
           try {
-            const petResponse = await apiInstance.get(`/pets/${foundAppointment.petId}`);
-            setPet(petResponse.data);
-            // Pre-fill breed in test data
-            setTestData((prev) => ({
-              ...prev,
-              breed: petResponse.data.breed || '',
-            }));
-          } catch {
-            // If pet fetch fails, we can still show the appointment
-            console.error('Failed to fetch pet details');
+            // Use the new endpoint to fetch pet details
+            const petData = await fetchPetDetails(foundAppointment.petId);
+
+            if (petData) {
+              setPet(petData);
+
+              // Pre-fill breed with pet's name
+              setTestData((prev) => ({
+                ...prev,
+                breed: petData.name || '',
+              }));
+            }
+          } catch (err) {
+            console.error('Failed to fetch pet details', err);
+            toast.error('Failed to load pet information');
           }
         }
 
         setLoading(false);
-      } catch {
+      } catch (err) {
+        console.error('Error loading appointment details', err);
         setError('Failed to load appointment details');
         setLoading(false);
         toast.error('Failed to load appointment details');
@@ -146,8 +152,14 @@ const AppointmentDetailPage: FC = () => {
   const handleSaveTestResult = async () => {
     if (!appointment?.petId) return;
 
+    // Make sure we're using the pet's name for breed if it's not already set
+    const testDataToSend = {
+      ...testData,
+      breed: testData.breed || pet?.name || '',
+    };
+
     setSavingTestResult(true);
-    const result = await saveTestResult(String(appointment.petId), testData);
+    const result = await saveTestResult(String(appointment.petId), testDataToSend);
     setSavingTestResult(false);
 
     if (result) {
@@ -317,12 +329,20 @@ const AppointmentDetailPage: FC = () => {
                         <Label htmlFor="breed" className="text-right">
                           Breed
                         </Label>
-                        <Input
-                          id="breed"
-                          value={testData.breed}
-                          onChange={(e) => handleTestDataChange('breed', e.target.value)}
-                          className="col-span-3"
-                        />
+                        <div className="col-span-3">
+                          <Input
+                            id="breed"
+                            value={testData.breed}
+                            onChange={(e) => handleTestDataChange('breed', e.target.value)}
+                            className="w-full"
+                            placeholder={pet?.name || "Pet's name"}
+                          />
+                          {pet?.name && (
+                            <p className="text-xs text-gray-500 mt-1">
+                              Using pet's name: {pet.name}
+                            </p>
+                          )}
+                        </div>
                       </div>
 
                       {testResult && (
