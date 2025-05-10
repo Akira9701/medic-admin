@@ -12,7 +12,6 @@ import {
   Trash,
   Check,
   X,
-  FileDown,
   TestTube,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -20,11 +19,7 @@ import { IPet } from '@/entities/Pet/types';
 import useAppointmentsStore, {
   updateAppointment,
 } from '@/entities/Appointments/model/appointments.store';
-import {
-  generateAppointmentReport,
-  updateAppointmentStatus,
-  deleteAppointment,
-} from '../api/appointment.api';
+import { updateAppointmentStatus, deleteAppointment } from '../api/appointment.api';
 import { saveTestResult } from '../api/test-result.api';
 import { fetchPetDetails } from '../api/pet.api';
 import { TestResultRequest, TestResultResponse } from '../types';
@@ -47,7 +42,6 @@ const AppointmentDetailPage: FC = () => {
   const [pet, setPet] = useState<IPet | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [generatingReport, setGeneratingReport] = useState<boolean>(false);
   const [testDialogOpen, setTestDialogOpen] = useState<boolean>(false);
   const [testResult, setTestResult] = useState<TestResultResponse | null>(null);
   const [testData, setTestData] = useState<TestResultRequest>({
@@ -132,14 +126,6 @@ const AppointmentDetailPage: FC = () => {
 
   const handleBack = () => {
     navigate('/appointments');
-  };
-
-  const handleGenerateReport = async () => {
-    if (!appointment?.petId) return;
-
-    setGeneratingReport(true);
-    await generateAppointmentReport(appointment.petId);
-    setGeneratingReport(false);
   };
 
   const handleTestDataChange = (field: keyof TestResultRequest, value: string | number) => {
@@ -445,22 +431,6 @@ const AppointmentDetailPage: FC = () => {
                 </div>
               </div>
             )}
-
-            {/* Generate Report Button */}
-            <div className="flex items-start space-x-4 pt-4">
-              <div className="p-3 rounded-lg bg-gray-50 text-gray-600">
-                <FileDown className="h-6 w-6" />
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold mb-2">Report</h2>
-                <Button
-                  onClick={handleGenerateReport}
-                  disabled={generatingReport || !appointment.petId}
-                  className="flex items-center gap-2">
-                  {generatingReport ? 'Generating...' : 'Generate Report'}
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
       </div>

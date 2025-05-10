@@ -15,15 +15,45 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 import { Separator } from '@/shared/ui/separator';
-import { Calendar, Clock, LoaderPinwheel, Shield, Stethoscope } from 'lucide-react';
+import { Calendar, Clock, FileDown, LoaderPinwheel, Shield, Stethoscope } from 'lucide-react';
 import { medicalRecordSchema, MedicalRecordFormValues } from '../lib/schema';
 import petApi from '@/entities/Pet/api/pet.api';
 import { Label } from '@/shared/ui/label';
 import { Switch } from '@/shared/ui/switch';
 import AlertModal from '@/shared/ui/alert-modal';
+import apiInstance from '@/shared/api/api.instance';
 
 // Define a type for editable pet fields
 type EditablePetFields = Pick<IPet, 'name' | 'breed' | 'birthDate' | 'chipNumber'>;
+
+// Function to generate and download a PDF report
+export const generatePetReport = async (petId: string): Promise<boolean> => {
+  try {
+    const response = await apiInstance.get(`/appointments/${petId}/report`, {
+      responseType: 'blob',
+    });
+
+    // Create a URL for the blob
+    const fileURL = window.URL.createObjectURL(new Blob([response.data]));
+
+    // Create a temporary link element
+    const fileLink = document.createElement('a');
+    fileLink.href = fileURL;
+    fileLink.setAttribute('download', `pet_report_${petId}.pdf`);
+
+    // Append to the document, click it and remove it
+    document.body.appendChild(fileLink);
+    fileLink.click();
+    document.body.removeChild(fileLink);
+
+    toast.success('Report downloaded successfully');
+    return true;
+  } catch (error) {
+    console.error('Error generating report:', error);
+    toast.error('Failed to generate report');
+    return false;
+  }
+};
 
 export default function PetDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +64,7 @@ export default function PetDetailPage() {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isSomeDataChanged, setIsSomeDataChanged] = useState<boolean>(false);
   const [isOpenAlertModal, setIsOpenAlertModal] = useState(false);
+  const [generatingReport, setGeneratingReport] = useState<boolean>(false);
 
   const petDataRef = useRef<EditablePetFields>(
     selectedPet
@@ -146,6 +177,14 @@ export default function PetDetailPage() {
       console.error('Error updating pet:', error);
       toast.error('Failed to update pet information');
     }
+  };
+
+  const handleGenerateReport = async () => {
+    if (!id) return;
+
+    setGeneratingReport(true);
+    await generatePetReport(id);
+    setGeneratingReport(false);
   };
 
   if (loading) {
@@ -286,6 +325,22 @@ export default function PetDetailPage() {
                 />
               </div>
             )}
+          </div>
+
+          {/* Generate Report Button */}
+          <div className="flex items-start space-x-4 pt-4">
+            <div className="p-3 rounded-lg bg-gray-50 text-gray-600">
+              <FileDown className="h-4 w-4" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold mb-2">Report</h2>
+              <Button
+                onClick={handleGenerateReport}
+                disabled={generatingReport || !id}
+                className="flex items-center gap-2">
+                {generatingReport ? 'Generating...' : 'Generate Report'}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
