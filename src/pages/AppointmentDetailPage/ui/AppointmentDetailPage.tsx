@@ -13,6 +13,7 @@ import {
   Check,
   X,
   FileDown,
+  TestTube,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import apiInstance from '@/shared/api/api.instance';
@@ -25,6 +26,18 @@ import {
   updateAppointmentStatus,
   deleteAppointment,
 } from '../api/appointment.api';
+import { saveTestResult } from '../api/test-result.api';
+import { TestResultRequest, TestResultResponse } from '../types';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/shared/ui/dialog';
+import { DialogClose } from '@/shared/ui/dialog';
 
 const AppointmentDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -35,6 +48,15 @@ const AppointmentDetailPage: FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [generatingReport, setGeneratingReport] = useState<boolean>(false);
+  const [testDialogOpen, setTestDialogOpen] = useState<boolean>(false);
+  const [testResult, setTestResult] = useState<TestResultResponse | null>(null);
+  const [testData, setTestData] = useState<TestResultRequest>({
+    testType: '',
+    value: 0,
+    date: new Date().toISOString().split('T')[0],
+    breed: '',
+  });
+  const [savingTestResult, setSavingTestResult] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,6 +79,11 @@ const AppointmentDetailPage: FC = () => {
           try {
             const petResponse = await apiInstance.get(`/pets/${foundAppointment.petId}`);
             setPet(petResponse.data);
+            // Pre-fill breed in test data
+            setTestData((prev) => ({
+              ...prev,
+              breed: petResponse.data.breed || '',
+            }));
           } catch {
             // If pet fetch fails, we can still show the appointment
             console.error('Failed to fetch pet details');
@@ -107,6 +134,25 @@ const AppointmentDetailPage: FC = () => {
     setGeneratingReport(true);
     await generateAppointmentReport(appointment.petId);
     setGeneratingReport(false);
+  };
+
+  const handleTestDataChange = (field: keyof TestResultRequest, value: string | number) => {
+    setTestData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleSaveTestResult = async () => {
+    if (!appointment?.petId) return;
+
+    setSavingTestResult(true);
+    const result = await saveTestResult(String(appointment.petId), testData);
+    setSavingTestResult(false);
+
+    if (result) {
+      setTestResult(result);
+    }
   };
 
   if (loading) {
@@ -213,6 +259,108 @@ const AppointmentDetailPage: FC = () => {
                     })}
                   </p>
                 </div>
+              </div>
+            </div>
+
+            {/* Test Results */}
+            <div className="flex items-start space-x-4">
+              <div className="p-3 rounded-lg bg-gray-50 text-gray-600">
+                <TestTube className="h-6 w-6" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold mb-2">Test Results</h2>
+                <Dialog open={testDialogOpen} onOpenChange={setTestDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="flex items-center gap-2">Add Test Result</Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>Add Test Result</DialogTitle>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="testType" className="text-right">
+                          Test Type
+                        </Label>
+                        <Input
+                          id="testType"
+                          value={testData.testType}
+                          onChange={(e) => handleTestDataChange('testType', e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="value" className="text-right">
+                          Value
+                        </Label>
+                        <Input
+                          id="value"
+                          type="number"
+                          value={testData.value}
+                          onChange={(e) => handleTestDataChange('value', Number(e.target.value))}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="date" className="text-right">
+                          Date
+                        </Label>
+                        <Input
+                          id="date"
+                          type="date"
+                          value={testData.date}
+                          onChange={(e) => handleTestDataChange('date', e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="breed" className="text-right">
+                          Breed
+                        </Label>
+                        <Input
+                          id="breed"
+                          value={testData.breed}
+                          onChange={(e) => handleTestDataChange('breed', e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+
+                      {testResult && (
+                        <div className="mt-4 p-4 border rounded-md bg-gray-50">
+                          <h3 className="font-medium mb-2">Analysis Results:</h3>
+                          <p>
+                            <span className="font-medium">Status:</span>{' '}
+                            {testResult.analysis?.status || 'N/A'}
+                          </p>
+                          <p>
+                            <span className="font-medium">Normal Range:</span>{' '}
+                            {testResult.analysis?.normRange
+                              ? testResult.analysis.normRange.join(' - ')
+                              : 'N/A'}
+                          </p>
+                          <p>
+                            <span className="font-medium">Prediction:</span>{' '}
+                            {testResult.analysis?.prediction ?? 'N/A'}
+                          </p>
+                          <p className="mt-2">
+                            <span className="font-medium">Message:</span>{' '}
+                            {testResult.message || 'N/A'}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex justify-between">
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancel</Button>
+                      </DialogClose>
+                      <Button
+                        onClick={handleSaveTestResult}
+                        disabled={savingTestResult || !testData.testType}>
+                        {savingTestResult ? 'Saving...' : 'Save Test Result'}
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               </div>
             </div>
           </div>
