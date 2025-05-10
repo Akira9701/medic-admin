@@ -29,6 +29,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { IAppointment } from '@/entities/Appointments/types';
 import { toast } from 'sonner';
 import { AppointmentStatus } from '@/entities/Appointments/types';
+import useVetsStore from '@/entities/Vets/model/vets.store';
+import usePetStore from '@/entities/Pet/model/pet.store';
+
 interface AppointmentsTableProps {
   appointments: IAppointment[];
 }
@@ -40,6 +43,10 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  // Get vets and pets from stores
+  const vets = useVetsStore((state) => state.vets);
+  const pets = usePetStore((state) => state.pets);
+
   const handleStatusChange = (appointment: IAppointment, newStatus: AppointmentStatus) => {
     // Here you would call your API to update the appointment status
     toast.success(`Appointment status changed to ${newStatus}`);
@@ -47,6 +54,16 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
 
   const handleViewDetails = (appointment: IAppointment) => {
     navigate(`/appointment/${appointment.id}`);
+  };
+
+  const getVetName = (vetId: string) => {
+    const vet = vets?.find((v) => v.id === vetId);
+    return vet ? `${vet.firstName} ${vet.lastName}` : vetId;
+  };
+
+  const getPetName = (petId: string) => {
+    const pet = pets?.find((p) => p.id === petId);
+    return pet ? pet.name : petId;
   };
 
   const columns: ColumnDef<IAppointment>[] = [
@@ -58,12 +75,15 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="pl-4">
-            Pet ID
+            Pet
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-      cell: ({ row }) => <div className="capitalize pl-4">{row.getValue('petId')}</div>,
+      cell: ({ row }) => {
+        const petId = row.getValue('petId') as string;
+        return <div className="capitalize pl-4">{getPetName(petId)}</div>;
+      },
     },
     {
       accessorKey: 'vetId',
@@ -72,12 +92,15 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            Vet ID
+            Vet
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-      cell: ({ row }) => <div className="font-normal">{row.getValue('vetId')}</div>,
+      cell: ({ row }) => {
+        const vetId = row.getValue('vetId') as string;
+        return <div className="font-normal">{getVetName(vetId)}</div>;
+      },
     },
     {
       accessorKey: 'startTime',
@@ -191,6 +214,17 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
     },
   ];
 
+  // Update filter to search by pet name instead of ID
+  const filterPetsByName = (value: string) => {
+    if (!pets) return;
+
+    const filteredPetIds = pets
+      .filter((pet) => pet.name.toLowerCase().includes(value.toLowerCase()))
+      .map((pet) => pet.id);
+
+    table.getColumn('petId')?.setFilterValue(filteredPetIds.length > 0 ? filteredPetIds : value);
+  };
+
   const table = useReactTable({
     data: appointments,
     columns,
@@ -214,9 +248,9 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
     <div className="w-full">
       <div className="flex items-center pb-4">
         <Input
-          placeholder="Filter by pet ID..."
+          placeholder="Filter by pet name..."
           value={(table.getColumn('petId')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('petId')?.setFilterValue(event.target.value)}
+          onChange={(event) => filterPetsByName(event.target.value)}
           className="max-w-sm"
         />
       </div>
