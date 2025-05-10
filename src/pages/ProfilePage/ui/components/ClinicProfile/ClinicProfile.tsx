@@ -17,6 +17,7 @@ import { clinicApi } from '@/entities/Clinic/api/clinic.api';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { AddVetToClinicModal } from '@/pages/ClinicDetailPage/ui/components';
+import { RemoveVetButton } from './components';
 
 const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -50,6 +51,10 @@ const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
   }, [clinic.id]);
 
   const handleVetAdded = () => {
+    clinicApi.getClinicVets(clinic.id).then((vets) => setClinicVets(vets));
+  };
+
+  const handleVetRemoved = () => {
     clinicApi.getClinicVets(clinic.id).then((vets) => setClinicVets(vets));
   };
 
@@ -98,30 +103,38 @@ const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {clinicVets?.map((vet) => (
-            <Link key={vet.id} to={`/vet/${vet.id}`}>
-              <div className="p-4 border rounded-lg hover:shadow-md transition-shadow duration-200 cursor-pointer">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full overflow-hidden">
-                    <img
-                      src={vet.avatarUrl}
-                      alt={`${vet.firstName} ${vet.lastName}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900">
-                      {vet.firstName} {vet.lastName}
-                    </p>
-                    <p className="text-sm text-gray-500">{vet.specialization}</p>
+            <div key={vet.id} className="relative">
+              <Link to={`/vet/${vet.id}`}>
+                <div className="p-4 border rounded-lg hover:shadow-md transition-shadow duration-200 cursor-pointer">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-full overflow-hidden">
+                      <img
+                        src={vet.avatarUrl}
+                        alt={`${vet.firstName} ${vet.lastName}`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">
+                        {vet.firstName} {vet.lastName}
+                      </p>
+                      <p className="text-sm text-gray-500">{vet.specialization}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+              <RemoveVetButton
+                clinicId={clinic.id}
+                vetId={vet.id}
+                vetName={`${vet.firstName} ${vet.lastName}`}
+                onVetRemoved={handleVetRemoved}
+                isEditMode={isEditMode}
+              />
+            </div>
           ))}
         </div>
       </div>
       <Separator className="mt-4" />
-      <VetsInfo clinic={clinic} />
 
       <div className="w-full flex justify-end">
         <Button

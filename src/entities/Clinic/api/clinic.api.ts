@@ -14,12 +14,7 @@ export const clinicApi = {
   },
 
   deleteVetFromClinic: async (clinicId: string, vetId: string): Promise<void> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        console.log(`Удаление ветеринара ${vetId} из клиники ${clinicId}`);
-        resolve();
-      }, 1000);
-    });
+    await apiInstance.delete(`/profiles/clinics/${clinicId}/vets/${vetId}`);
   },
 
   getClinicVets: async (clinicId: string): Promise<IVet[]> => {
@@ -28,11 +23,8 @@ export const clinicApi = {
   },
 
   getAllVets: async (): Promise<IVet[]> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(otherVetsMock);
-      }, 1000);
-    });
+    const response = await apiInstance.get<IVet[]>('/profiles/vets/all');
+    return response.data;
   },
 
   getAllClinics: async (): Promise<IClinic[]> => {
