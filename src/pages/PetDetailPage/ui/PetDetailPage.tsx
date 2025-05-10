@@ -23,34 +23,34 @@ import { Switch } from '@/shared/ui/switch';
 import AlertModal from '@/shared/ui/alert-modal';
 import apiInstance from '@/shared/api/api.instance';
 
-// Define a type for editable pet fields
+// Определяем тип для редактируемых полей питомца
 type EditablePetFields = Pick<IPet, 'name' | 'breed' | 'birthDate' | 'chipNumber'>;
 
-// Function to generate and download a PDF report
+// Функция для генерации и скачивания PDF отчета
 export const generatePetReport = async (petId: string): Promise<boolean> => {
   try {
     const response = await apiInstance.get(`/appointments/${petId}/report`, {
       responseType: 'blob',
     });
 
-    // Create a URL for the blob
+    // Создаем URL для blob
     const fileURL = window.URL.createObjectURL(new Blob([response.data]));
 
-    // Create a temporary link element
+    // Создаем временный элемент ссылки
     const fileLink = document.createElement('a');
     fileLink.href = fileURL;
     fileLink.setAttribute('download', `pet_report_${petId}.pdf`);
 
-    // Append to the document, click it and remove it
+    // Добавляем в документ, кликаем и удаляем
     document.body.appendChild(fileLink);
     fileLink.click();
     document.body.removeChild(fileLink);
 
-    toast.success('Report downloaded successfully');
+    toast.success('Отчет успешно скачан');
     return true;
   } catch (error) {
-    console.error('Error generating report:', error);
-    toast.error('Failed to generate report');
+    console.error('Ошибка генерации отчета:', error);
+    toast.error('Не удалось сгенерировать отчет');
     return false;
   }
 };
@@ -81,7 +81,7 @@ export default function PetDetailPage() {
     return user && 'specialization' in user;
   }, [user]);
 
-  // Initialize form
+  // Инициализация формы
   const form = useForm<MedicalRecordFormValues>({
     resolver: zodResolver(medicalRecordSchema),
     defaultValues: {
@@ -99,8 +99,8 @@ export default function PetDetailPage() {
           setMedicalRecords(records);
         })
         .catch((error) => {
-          console.error('Failed to fetch pet:', error);
-          toast.error('Failed to load pet details');
+          console.error('Не удалось получить данные питомца:', error);
+          toast.error('Не удалось загрузить информацию о питомце');
         })
         .finally(() => {
           setLoading(false);
@@ -129,10 +129,10 @@ export default function PetDetailPage() {
     [isSomeDataChanged],
   );
 
-  // Handle form submission
+  // Обработка отправки формы
   const onSubmit = async (values: MedicalRecordFormValues) => {
     if (!selectedPet || !id || !isVet || !user || !('specialization' in user)) {
-      toast.error('Unable to add medical record');
+      toast.error('Невозможно добавить медицинскую запись');
       return;
     }
 
@@ -156,26 +156,26 @@ export default function PetDetailPage() {
       setMedicalRecords([...medicalRecords, newRecord]);
       form.reset();
     } catch (error) {
-      console.error('Error adding medical record:', error);
-      toast.error('Failed to add medical record');
+      console.error('Ошибка добавления медицинской записи:', error);
+      toast.error('Не удалось добавить медицинскую запись');
     }
   };
 
   const handleSavePet = async () => {
     if (!selectedPet || !id) {
-      toast.error('Unable to update pet');
+      toast.error('Невозможно обновить информацию о питомце');
       return;
     }
 
     try {
       await petApi.updatePet(id, petDataRef.current);
       updatePet(id, petDataRef.current);
-      toast.success('Pet information updated');
+      toast.success('Информация о питомце обновлена');
       setIsSomeDataChanged(false);
       setIsEditMode(false);
     } catch (error) {
-      console.error('Error updating pet:', error);
-      toast.error('Failed to update pet information');
+      console.error('Ошибка обновления информации о питомце:', error);
+      toast.error('Не удалось обновить информацию о питомце');
     }
   };
 
@@ -198,10 +198,10 @@ export default function PetDetailPage() {
   if (!selectedPet) {
     return (
       <div className="mx-auto max-w-md text-center p-4 border rounded-lg">
-        <h2 className="text-2xl font-semibold mb-2">Pet Not Found</h2>
-        <p className="text-muted-foreground mb-4">The requested pet could not be found.</p>
+        <h2 className="text-2xl font-semibold mb-2">Питомец не найден</h2>
+        <p className="text-muted-foreground mb-4">Запрашиваемый питомец не найден.</p>
         <Button asChild>
-          <Link to="/pets">Back to Pets</Link>
+          <Link to="/pets">Назад к списку питомцев</Link>
         </Button>
       </div>
     );
@@ -211,7 +211,7 @@ export default function PetDetailPage() {
     <div className="flex flex-col relative">
       <div className="flex items-center space-x-2 absolute top-0 right-0">
         <Switch id="edit-mode" checked={isEditMode} onCheckedChange={setIsEditMode} />
-        <Label htmlFor="edit-mode">Edit Mode</Label>
+        <Label htmlFor="edit-mode">Режим редактирования</Label>
       </div>
 
       <div className="flex items-center justify-between mb-4">
@@ -226,13 +226,13 @@ export default function PetDetailPage() {
           <div className="space-y-3">
             <h3 className="text-lg font-semibold flex items-center">
               <Shield className="h-4 w-4 mr-2" />
-              Pet Information
+              Информация о питомце
             </h3>
             <div className="space-y-2">
               {isEditMode ? (
                 <>
                   <div className="flex items-center">
-                    <Label className="font-medium w-28">Name:</Label>
+                    <Label className="font-medium w-28">Имя:</Label>
                     <Input
                       defaultValue={selectedPet.name}
                       onChange={(e) => handleChange('name', e.target.value)}
@@ -240,7 +240,7 @@ export default function PetDetailPage() {
                     />
                   </div>
                   <div className="flex items-center">
-                    <Label className="font-medium w-28">Breed:</Label>
+                    <Label className="font-medium w-28">Порода:</Label>
                     <Input
                       defaultValue={selectedPet.breed}
                       onChange={(e) => handleChange('breed', e.target.value)}
@@ -248,7 +248,7 @@ export default function PetDetailPage() {
                     />
                   </div>
                   <div className="flex items-center">
-                    <Label className="font-medium w-28">Birth Date:</Label>
+                    <Label className="font-medium w-28">Дата рождения:</Label>
                     <Input
                       type="date"
                       defaultValue={selectedPet.birthDate.split('T')[0]}
@@ -257,7 +257,7 @@ export default function PetDetailPage() {
                     />
                   </div>
                   <div className="flex items-center">
-                    <Label className="font-medium w-28">Chip Number:</Label>
+                    <Label className="font-medium w-28">Номер чипа:</Label>
                     <Input
                       defaultValue={selectedPet.chipNumber}
                       onChange={(e) => handleChange('chipNumber', e.target.value)}
@@ -268,18 +268,18 @@ export default function PetDetailPage() {
               ) : (
                 <>
                   <div className="flex items-center">
-                    <span className="font-medium w-28">Breed:</span>
+                    <span className="font-medium w-28">Порода:</span>
                     <span>{selectedPet.breed}</span>
                   </div>
                   <div className="flex items-center">
-                    <span className="font-medium w-28">Birth Date:</span>
+                    <span className="font-medium w-28">Дата рождения:</span>
                     <span className="flex items-center">
                       <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
                       {new Date(selectedPet.birthDate).toLocaleDateString()}
                     </span>
                   </div>
                   <div className="flex items-center">
-                    <span className="font-medium w-28">Chip Number:</span>
+                    <span className="font-medium w-28">Номер чипа:</span>
                     <code className="bg-muted px-2 py-1 rounded font-mono text-xs">
                       {selectedPet.chipNumber}
                     </code>
@@ -327,18 +327,18 @@ export default function PetDetailPage() {
             )}
           </div>
 
-          {/* Generate Report Button */}
+          {/* Кнопка генерации отчета */}
           <div className="flex items-start space-x-4 pt-4">
             <div className="p-3 rounded-lg bg-gray-50 text-gray-600">
               <FileDown className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold mb-2">Report</h2>
+              <h2 className="text-lg font-semibold mb-2">Отчет</h2>
               <Button
                 onClick={handleGenerateReport}
                 disabled={generatingReport || !id}
                 className="flex items-center gap-2">
-                {generatingReport ? 'Generating...' : 'Generate Report'}
+                {generatingReport ? 'Генерация...' : 'Сгенерировать отчет'}
               </Button>
             </div>
           </div>
@@ -350,20 +350,20 @@ export default function PetDetailPage() {
           <TabsList className="grid grid-cols-2 w-[400px] mb-3">
             <TabsTrigger value="records" className="flex items-center">
               <Clock className="h-4 w-4 mr-2" />
-              Medical Records
+              Медицинские записи
             </TabsTrigger>
             <TabsTrigger value="add" className="flex items-center">
               <Stethoscope className="h-4 w-4 mr-2" />
-              Add Record
+              Добавить запись
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="records">
             <div className="border rounded-lg p-4 bg-card text-card-foreground">
               <div className="mb-3">
-                <h3 className="text-2xl font-semibold">Medical History</h3>
+                <h3 className="text-2xl font-semibold">История болезни</h3>
                 <p className="text-muted-foreground">
-                  View the complete medical history for {selectedPet.name}
+                  Просмотр полной истории болезни для {selectedPet.name}
                 </p>
               </div>
               <Separator className="my-3" />
@@ -378,21 +378,21 @@ export default function PetDetailPage() {
                             <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
                             {format(new Date(record.date), 'PPP')}
                           </h4>
-                          <Badge variant="secondary">Dr. {record.vet.firstName}</Badge>
+                          <Badge variant="secondary">Др. {record.vet.firstName}</Badge>
                         </div>
                         <Separator className="my-2" />
                         <div className="space-y-2 pt-1">
                           <div>
-                            <span className="font-medium text-muted-foreground">Diagnosis:</span>{' '}
+                            <span className="font-medium text-muted-foreground">Диагноз:</span>{' '}
                             <span className="text-foreground">{record.diagnosis}</span>
                           </div>
                           <div>
-                            <span className="font-medium text-muted-foreground">Treatment:</span>{' '}
+                            <span className="font-medium text-muted-foreground">Лечение:</span>{' '}
                             <span className="text-foreground">{record.treatment}</span>
                           </div>
                           {record.notes && (
                             <div>
-                              <span className="font-medium text-muted-foreground">Notes:</span>{' '}
+                              <span className="font-medium text-muted-foreground">Примечания:</span>{' '}
                               <span className="text-foreground">{record.notes}</span>
                             </div>
                           )}
@@ -403,7 +403,7 @@ export default function PetDetailPage() {
                 ) : (
                   <div className="text-center py-8 bg-muted/20 rounded-lg border border-dashed">
                     <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground/60" />
-                    <p className="mt-4 text-muted-foreground">No medical records available</p>
+                    <p className="mt-4 text-muted-foreground">Нет доступных медицинских записей</p>
                   </div>
                 )}
               </div>
@@ -413,9 +413,9 @@ export default function PetDetailPage() {
           <TabsContent value="add">
             <div className="border rounded-lg p-4 bg-card text-card-foreground">
               <div className="mb-4">
-                <h3 className="text-2xl font-semibold">Add Medical Record</h3>
+                <h3 className="text-2xl font-semibold">Добавить медицинскую запись</h3>
                 <p className="text-muted-foreground">
-                  Add a new medical record for {selectedPet.name}
+                  Добавить новую медицинскую запись для {selectedPet.name}
                 </p>
               </div>
 
@@ -426,9 +426,9 @@ export default function PetDetailPage() {
                     name="diagnosis"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Diagnosis</FormLabel>
+                        <FormLabel>Диагноз</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter diagnosis" {...field} />
+                          <Input placeholder="Введите диагноз" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -440,9 +440,9 @@ export default function PetDetailPage() {
                     name="treatment"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Treatment</FormLabel>
+                        <FormLabel>Лечение</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter prescribed treatment" {...field} />
+                          <Input placeholder="Введите назначенное лечение" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -454,10 +454,10 @@ export default function PetDetailPage() {
                     name="notes"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Notes (Optional)</FormLabel>
+                        <FormLabel>Примечания (необязательно)</FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Enter additional notes"
+                            placeholder="Введите дополнительные примечания"
                             className="min-h-20"
                             {...field}
                           />
@@ -471,7 +471,7 @@ export default function PetDetailPage() {
                     type="submit"
                     className="w-full md:w-auto"
                     disabled={form.formState.isSubmitting}>
-                    Add Record
+                    Добавить запись
                   </Button>
                 </form>
               </Form>

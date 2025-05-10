@@ -61,7 +61,7 @@ const AppointmentDetailPage: FC = () => {
         const foundAppointment = appointments.find((a) => a.id === Number(id));
 
         if (!foundAppointment) {
-          setError('Appointment not found');
+          setError('Запись не найдена');
           setLoading(false);
           return;
         }
@@ -138,10 +138,10 @@ const AppointmentDetailPage: FC = () => {
   const handleSaveTestResult = async () => {
     if (!appointment?.petId) return;
 
-    // Make sure we're using the pet's name for breed if it's not already set
+    // Always use the pet's name for breed
     const testDataToSend = {
       ...testData,
-      breed: testData.breed || pet?.name || '',
+      breed: pet?.name || '',
     };
 
     setSavingTestResult(true);
@@ -154,15 +154,15 @@ const AppointmentDetailPage: FC = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-full">Loading...</div>;
+    return <div className="flex justify-center items-center h-full">Загрузка...</div>;
   }
 
   if (error || !appointment) {
     return (
       <div className="flex flex-col items-center justify-center h-full">
-        <p className="text-red-500 mb-4">{error || 'Appointment not found'}</p>
+        <p className="text-red-500 mb-4">{error || 'Запись не найдена'}</p>
         <Button onClick={handleBack} variant="outline" className="flex items-center gap-2">
-          <ChevronLeft size={16} /> Back to Appointments
+          <ChevronLeft size={16} /> Назад к записям
         </Button>
       </div>
     );
@@ -176,25 +176,23 @@ const AppointmentDetailPage: FC = () => {
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       <div className="mb-6 flex items-center justify-between">
         <Button onClick={handleBack} variant="outline" className="flex items-center gap-2">
-          <ChevronLeft size={16} /> Back to Appointments
+          <ChevronLeft size={16} /> Назад к записям
         </Button>
         <div className="flex gap-2">
           <Button
             variant="outline"
             className="flex items-center gap-2"
             onClick={() => navigate(`/appointments/edit/${id}`)}>
-            <Edit size={16} /> Edit
+            <Edit size={16} /> Редактировать
           </Button>
           <Button variant="destructive" className="flex items-center gap-2" onClick={handleDelete}>
-            <Trash size={16} /> Delete
+            <Trash size={16} /> Удалить
           </Button>
         </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-        <h1 className="text-2xl font-bold mb-6 pb-4 border-b border-gray-200">
-          Appointment Details
-        </h1>
+        <h1 className="text-2xl font-bold mb-6 pb-4 border-b border-gray-200">Детали записи</h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div className="space-y-6">
@@ -204,24 +202,24 @@ const AppointmentDetailPage: FC = () => {
                 <PawPrint className="h-6 w-6" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold mb-2">Pet Information</h2>
+                <h2 className="text-lg font-semibold mb-2">Информация о питомце</h2>
                 {pet ? (
                   <div className="space-y-1">
                     <p>
-                      <span className="font-medium">Name:</span> {pet.name}
+                      <span className="font-medium">Кличка:</span> {pet.name}
                     </p>
                     <p>
-                      <span className="font-medium">Type:</span> {pet.type}
+                      <span className="font-medium">Тип:</span> {pet.type}
                     </p>
                     <p>
-                      <span className="font-medium">Breed:</span> {pet.breed}
+                      <span className="font-medium">Порода:</span> {pet.breed}
                     </p>
                     <p>
                       <span className="font-medium">ID:</span> {appointment.petId}
                     </p>
                   </div>
                 ) : (
-                  <p>Pet ID: {appointment.petId}</p>
+                  <p>ID питомца: {appointment.petId}</p>
                 )}
               </div>
             </div>
@@ -232,10 +230,10 @@ const AppointmentDetailPage: FC = () => {
                 <CalendarClock className="h-6 w-6" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold mb-2">Appointment Time</h2>
+                <h2 className="text-lg font-semibold mb-2">Время приёма</h2>
                 <div className="space-y-1">
                   <p>
-                    <span className="font-medium">Date:</span>{' '}
+                    <span className="font-medium">Дата:</span>{' '}
                     {startTime.toLocaleDateString('ru-RU', {
                       day: '2-digit',
                       month: '2-digit',
@@ -243,14 +241,14 @@ const AppointmentDetailPage: FC = () => {
                     })}
                   </p>
                   <p>
-                    <span className="font-medium">Start Time:</span>{' '}
+                    <span className="font-medium">Время начала:</span>{' '}
                     {startTime.toLocaleTimeString('ru-RU', {
                       hour: '2-digit',
                       minute: '2-digit',
                     })}
                   </p>
                   <p>
-                    <span className="font-medium">End Time:</span>{' '}
+                    <span className="font-medium">Время окончания:</span>{' '}
                     {endTime.toLocaleTimeString('ru-RU', {
                       hour: '2-digit',
                       minute: '2-digit',
@@ -266,19 +264,19 @@ const AppointmentDetailPage: FC = () => {
                 <TestTube className="h-6 w-6" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold mb-2">Test Results</h2>
+                <h2 className="text-lg font-semibold mb-2">Результаты анализов</h2>
                 <Dialog open={testDialogOpen} onOpenChange={setTestDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button className="flex items-center gap-2">Add Test Result</Button>
+                    <Button className="flex items-center gap-2">Добавить результат анализа</Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                      <DialogTitle>Add Test Result</DialogTitle>
+                      <DialogTitle>Добавить результат анализа</DialogTitle>
                     </DialogHeader>
                     <div className="grid gap-4 py-4">
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="testType" className="text-right">
-                          Test Type
+                          Тип анализа
                         </Label>
                         <Input
                           id="testType"
@@ -289,7 +287,7 @@ const AppointmentDetailPage: FC = () => {
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="value" className="text-right">
-                          Value
+                          Значение
                         </Label>
                         <Input
                           id="value"
@@ -301,7 +299,7 @@ const AppointmentDetailPage: FC = () => {
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="date" className="text-right">
-                          Date
+                          Дата
                         </Label>
                         <Input
                           id="date"
@@ -313,56 +311,50 @@ const AppointmentDetailPage: FC = () => {
                       </div>
                       <div className="grid grid-cols-4 items-center gap-4">
                         <Label htmlFor="breed" className="text-right">
-                          Breed
+                          Кличка
                         </Label>
                         <div className="col-span-3">
-                          <Input
-                            id="breed"
-                            value={testData.breed}
-                            onChange={(e) => handleTestDataChange('breed', e.target.value)}
-                            className="w-full"
-                            placeholder={pet?.name || "Pet's name"}
-                          />
-                          {pet?.name && (
-                            <p className="text-xs text-gray-500 mt-1">
-                              Using pet's name: {pet.name}
-                            </p>
-                          )}
+                          <div className="p-2 bg-gray-50 rounded border border-gray-200">
+                            {pet?.name || 'Неизвестно'}
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Кличка питомца используется для анализа
+                          </p>
                         </div>
                       </div>
 
                       {testResult && (
                         <div className="mt-4 p-4 border rounded-md bg-gray-50">
-                          <h3 className="font-medium mb-2">Analysis Results:</h3>
+                          <h3 className="font-medium mb-2">Результаты анализа:</h3>
                           <p>
-                            <span className="font-medium">Status:</span>{' '}
-                            {testResult.analysis?.status || 'N/A'}
+                            <span className="font-medium">Статус:</span>{' '}
+                            {testResult.analysis?.status || 'Н/Д'}
                           </p>
                           <p>
-                            <span className="font-medium">Normal Range:</span>{' '}
+                            <span className="font-medium">Нормальный диапазон:</span>{' '}
                             {testResult.analysis?.normRange
                               ? testResult.analysis.normRange.join(' - ')
-                              : 'N/A'}
+                              : 'Н/Д'}
                           </p>
                           <p>
-                            <span className="font-medium">Prediction:</span>{' '}
-                            {testResult.analysis?.prediction ?? 'N/A'}
+                            <span className="font-medium">Прогноз:</span>{' '}
+                            {testResult.analysis?.prediction ?? 'Н/Д'}
                           </p>
                           <p className="mt-2">
-                            <span className="font-medium">Message:</span>{' '}
-                            {testResult.message || 'N/A'}
+                            <span className="font-medium">Сообщение:</span>{' '}
+                            {testResult.message || 'Н/Д'}
                           </p>
                         </div>
                       )}
                     </div>
                     <div className="flex justify-between">
                       <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
+                        <Button variant="outline">Отмена</Button>
                       </DialogClose>
                       <Button
                         onClick={handleSaveTestResult}
                         disabled={savingTestResult || !testData.testType}>
-                        {savingTestResult ? 'Saving...' : 'Save Test Result'}
+                        {savingTestResult ? 'Сохранение...' : 'Сохранить результат'}
                       </Button>
                     </div>
                   </DialogContent>
@@ -378,7 +370,7 @@ const AppointmentDetailPage: FC = () => {
                 <AlertCircle className="h-6 w-6" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold mb-2">Status</h2>
+                <h2 className="text-lg font-semibold mb-2">Статус</h2>
                 <div className="flex items-center mb-4">
                   <span
                     className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${
@@ -390,7 +382,13 @@ const AppointmentDetailPage: FC = () => {
                             ? 'bg-blue-100 text-blue-800'
                             : 'bg-gray-100 text-gray-800'
                     }`}>
-                    {appointment.status}
+                    {appointment.status === 'active'
+                      ? 'Активен'
+                      : appointment.status === 'cancelled'
+                        ? 'Отменён'
+                        : appointment.status === 'completed'
+                          ? 'Завершён'
+                          : appointment.status}
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -399,21 +397,21 @@ const AppointmentDetailPage: FC = () => {
                     variant={appointment.status === 'active' ? 'default' : 'outline'}
                     className="flex items-center gap-1"
                     onClick={() => handleStatusChange('active')}>
-                    <Check size={16} /> Active
+                    <Check size={16} /> Активен
                   </Button>
                   <Button
                     size="sm"
                     variant={appointment.status === 'completed' ? 'default' : 'outline'}
                     className="flex items-center gap-1"
                     onClick={() => handleStatusChange('completed')}>
-                    <Check size={16} /> Completed
+                    <Check size={16} /> Завершён
                   </Button>
                   <Button
                     size="sm"
                     variant={appointment.status === 'cancelled' ? 'default' : 'outline'}
                     className="flex items-center gap-1"
                     onClick={() => handleStatusChange('cancelled')}>
-                    <X size={16} /> Cancelled
+                    <X size={16} /> Отменён
                   </Button>
                 </div>
               </div>
@@ -426,7 +424,7 @@ const AppointmentDetailPage: FC = () => {
                   <FileText className="h-6 w-6" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold mb-2">Notes</h2>
+                  <h2 className="text-lg font-semibold mb-2">Заметки</h2>
                   <p className="text-gray-700 whitespace-pre-wrap">{appointment.notes}</p>
                 </div>
               </div>
