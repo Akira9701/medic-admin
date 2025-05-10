@@ -10,9 +10,10 @@ interface IServices {
   services: string[];
   removeService: (service: string) => void;
   addService: (service: string) => void;
+  isEditMode?: boolean;
 }
 
-const Services: FC<IServices> = ({ services, removeService, addService }) => {
+const Services: FC<IServices> = ({ services, removeService, addService, isEditMode = true }) => {
   const serviceNameRef = useRef<string>('');
   return (
     <div className="flex flex-col gap-2 mt-4">
@@ -21,43 +22,49 @@ const Services: FC<IServices> = ({ services, removeService, addService }) => {
         <div className="flex gap-2 w-[80%] ">
           {services?.map((service) => (
             <Badge
-              className="h-fit"
+              className={`h-fit ${!isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
               key={service}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                removeService(service);
-              }}>
+              onClick={
+                isEditMode
+                  ? (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      removeService(service);
+                    }
+                  : undefined
+              }>
               {service}
-              <X />
+              {isEditMode && <X />}
             </Badge>
           ))}
         </div>
         <div className="flex gap-2 ml-auto">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline">Добавить услугу</Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80">
-              <div className="grid gap-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium leading-none mb-4">Add new service</h4>
-                  <Input
-                    className="mb-0"
-                    placeholder="Service name"
-                    onChange={(e) => (serviceNameRef.current = e.target.value)}
-                  />
-                  <Button
-                    className="mt-4"
-                    onClick={() => {
-                      addService(serviceNameRef.current);
-                    }}>
-                    Добавить
-                  </Button>
+          {isEditMode && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline">Добавить услугу</Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <div className="grid gap-4">
+                  <div className="space-y-2">
+                    <h4 className="font-medium leading-none mb-4">Add new service</h4>
+                    <Input
+                      className="mb-0"
+                      placeholder="Service name"
+                      onChange={(e) => (serviceNameRef.current = e.target.value)}
+                    />
+                    <Button
+                      className="mt-4"
+                      onClick={() => {
+                        addService(serviceNameRef.current);
+                      }}>
+                      Добавить
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </PopoverContent>
-          </Popover>
+              </PopoverContent>
+            </Popover>
+          )}
         </div>
       </div>
     </div>

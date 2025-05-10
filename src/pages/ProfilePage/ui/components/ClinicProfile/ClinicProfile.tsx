@@ -1,5 +1,5 @@
 import { IClinic } from '@/entities/Clinic/types';
-import { FC, useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import UserInfo from './components/ClinicInfo';
 import AddressInfo from './components/AddressInfo';
 import { Separator } from '@/shared/ui/separator';
@@ -16,8 +16,7 @@ import { IVet } from '@/entities/Vets/types';
 import { clinicApi } from '@/entities/Clinic/api/clinic.api';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
-
+import { AddVetToClinicModal } from '@/pages/ClinicDetailPage/ui/components';
 
 const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
   const [isEditMode, setIsEditMode] = useState(false);
@@ -48,7 +47,11 @@ const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
 
   useEffect(() => {
     clinicApi.getClinicVets(clinic.id).then((vets) => setClinicVets(vets));
-  }, []);
+  }, [clinic.id]);
+
+  const handleVetAdded = () => {
+    clinicApi.getClinicVets(clinic.id).then((vets) => setClinicVets(vets));
+  };
 
   return (
     <>
@@ -81,18 +84,26 @@ const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
           setServices(services.filter((s) => s !== service));
         }}
         services={clinic?.services}
+        isEditMode={isEditMode}
       />
       <Separator className="mt-4" />
       <div className="mt-4">
-        <h3 className="text-lg font-semibold mb-4">Clinic Doctors</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Clinic Doctors</h3>
+          <AddVetToClinicModal
+            clinicId={clinic.id}
+            clinicName={clinic.name}
+            onVetAdded={handleVetAdded}
+          />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {clinicVets?.map((vet) => (
             <Link key={vet.id} to={`/vet/${vet.id}`}>
               <div className="p-4 border rounded-lg hover:shadow-md transition-shadow duration-200 cursor-pointer">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 rounded-full overflow-hidden">
-                    <img 
-                      src={vet.avatarUrl} 
+                    <img
+                      src={vet.avatarUrl}
                       alt={`${vet.firstName} ${vet.lastName}`}
                       className="w-full h-full object-cover"
                     />
@@ -110,8 +121,8 @@ const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
         </div>
       </div>
       <Separator className="mt-4" />
-      <VetsInfo vets={clinicVets} />
-    
+      <VetsInfo clinic={clinic} />
+
       <div className="w-full flex justify-end">
         <Button
           disabled={!isSomeDataChanged}

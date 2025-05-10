@@ -9,26 +9,27 @@ import { clinicApi } from '@/entities/Clinic/api/clinic.api';
 import { useLocation } from 'react-router';
 
 export default function ClinicDetailPage() {
-  const  location  = useLocation(); 
+  const location = useLocation();
   const [loading, setLoading] = useState(true);
   const [clinic, setClinic] = useState<IClinic | null>(null);
+  const clinicId = location.pathname.split('/').pop() as string;
+
+  const fetchClinic = async () => {
+    try {
+      setLoading(true);
+      const clinic = await clinicApi.getClinic({ id: clinicId });
+      setClinic(clinic);
+    } catch (error) {
+      console.error('Error fetching clinic:', error);
+      toast.error('Failed to load clinic information');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchClinic = async () => {
-      try {
-        setLoading(true);
-        const clinic = await clinicApi.getClinic({ id: location.pathname.split('/').pop() as string });
-        setClinic(clinic);
-      } catch (error) {
-        console.error('Error fetching clinic:', error);
-        toast.error('Failed to load clinic information');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchClinic();
-  }, [location.pathname]);
+  }, [clinicId]);
 
   if (loading) {
     return (
