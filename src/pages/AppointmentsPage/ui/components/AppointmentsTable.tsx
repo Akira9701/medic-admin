@@ -13,7 +13,8 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/shared/ui/button';
 import {
@@ -21,6 +22,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuItem,
+  DropdownMenuSeparator,
 } from '@/shared/ui/dropdown-menu';
 import { Input } from '@/shared/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
@@ -32,6 +34,7 @@ interface AppointmentsTableProps {
 }
 
 export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
+  const navigate = useNavigate();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -42,38 +45,42 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
     toast.success(`Appointment status changed to ${newStatus}`);
   };
 
+  const handleViewDetails = (appointment: IAppointment) => {
+    navigate(`/appointment/${appointment.id}`);
+  };
+
   const columns: ColumnDef<IAppointment>[] = [
     {
-      accessorKey: 'petName',
+      accessorKey: 'petId',
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
             className="pl-4">
-            Pet Name
+            Pet ID
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-      cell: ({ row }) => <div className="capitalize pl-4">{row.getValue('petName')}</div>,
+      cell: ({ row }) => <div className="capitalize pl-4">{row.getValue('petId')}</div>,
     },
     {
-      accessorKey: 'ownerName',
+      accessorKey: 'vetId',
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-            Owner
+            Vet ID
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
       },
-      cell: ({ row }) => <div className="font-normal">{row.getValue('ownerName')}</div>,
+      cell: ({ row }) => <div className="font-normal">{row.getValue('vetId')}</div>,
     },
     {
-      accessorKey: 'dateTime',
+      accessorKey: 'startTime',
       header: ({ column }) => {
         return (
           <Button
@@ -85,18 +92,26 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
         );
       },
       cell: ({ row }) => {
-        const date = new Date(row.getValue('dateTime'));
+        const startTime = new Date(row.getValue('startTime'));
+        const endTime = new Date(row.original.endTime);
         return (
           <div>
-            {date.toLocaleDateString('en-US', {
-              weekday: 'short',
-              month: 'short',
-              day: 'numeric',
+            {startTime.toLocaleDateString('ru-RU', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
             })}{' '}
-            {date.toLocaleTimeString('en-US', {
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
+            <span className="text-gray-500">
+              {startTime.toLocaleTimeString('ru-RU', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+              {' - '}
+              {endTime.toLocaleTimeString('ru-RU', {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
           </div>
         );
       },
@@ -146,6 +161,13 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() => handleViewDetails(appointment)}
+                className="cursor-pointer flex items-center">
+                <ExternalLink className="mr-2 h-4 w-4" />
+                View Details
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => handleStatusChange(appointment, 'active')}>
                 Mark as Active
               </DropdownMenuItem>
@@ -185,9 +207,9 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
     <div className="w-full">
       <div className="flex items-center pb-4">
         <Input
-          placeholder="Filter by pet name..."
-          value={(table.getColumn('petName')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('petName')?.setFilterValue(event.target.value)}
+          placeholder="Filter by pet ID..."
+          value={(table.getColumn('petId')?.getFilterValue() as string) ?? ''}
+          onChange={(event) => table.getColumn('petId')?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
       </div>
@@ -209,7 +231,11 @@ export function AppointmentsTable({ appointments }: AppointmentsTableProps) {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && 'selected'}
+                  className="cursor-pointer"
+                  onClick={() => handleViewDetails(row.original)}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}

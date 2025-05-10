@@ -13,7 +13,7 @@ const AppointmentsPage = () => {
 
   useEffect(() => {
     if (!vetId) return;
-    apointmentsApi.getAppointments(vetId).then((appointments) => {
+    apointmentsApi.getAppointments().then((appointments) => {
       setAppointments(appointments);
     });
   }, []);

@@ -5,6 +5,7 @@ export const clinicVetsRoute = '/clinic-vets';
 export const allClinicsRoute = '/all-clinics';
 export const patientsRoute = '/patients';
 export const appointmentsRoute = '/appointments';
+export const appointmentDetailRoute = '/appointment/:id';
 export const loginRoute = '/login';
 export const registerRoute = '/register';
 
