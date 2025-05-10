@@ -4,7 +4,6 @@ import { AppSidebar } from '@/shared/ui/appsidebar';
 import { useEffect, useMemo } from 'react';
 import {
   appointmentsRoute,
-  clinicVetsRoute,
   loginRoute,
   petsRoute,
   profileRoute,
@@ -39,32 +38,27 @@ const Root = () => {
         url: profileRoute,
         icon: Home,
       },
-      
-            {
-              title: 'Pets',
-              url: petsRoute,
-              icon: Stethoscope,
-            },
-            {
-              title: 'Appointments',
-              url: appointmentsRoute,
-              icon: Dog,
-            },
-            {
-              title: 'All Vets',
-              url: vetsRoute,
-              icon: ClipboardPlus,
-            },
-            {
-              title: 'All Clinics',
-              url: allClinicsRoute,
-              icon: Hospital,
-            },
-            {
-              title: 'Clinic Vets',
-              url: clinicVetsRoute,
-              icon: Hospital,
-            },
+
+      {
+        title: 'Pets',
+        url: petsRoute,
+        icon: Stethoscope,
+      },
+      {
+        title: 'Appointments',
+        url: appointmentsRoute,
+        icon: Dog,
+      },
+      {
+        title: 'All Vets',
+        url: vetsRoute,
+        icon: ClipboardPlus,
+      },
+      {
+        title: 'All Clinics',
+        url: allClinicsRoute,
+        icon: Hospital,
+      },
     ],
     [isClinic],
   );
