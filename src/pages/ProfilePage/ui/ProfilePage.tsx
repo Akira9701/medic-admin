@@ -12,8 +12,7 @@ const ProfilePage = () => {
 
   return (
     <div className="relative">
-      {isClinic ? <ClinicProfile clinic={user as IClinic} /> : <VetProfile vet={user as IVet} />}
-    </div>
+   </div>
   );
 };
 

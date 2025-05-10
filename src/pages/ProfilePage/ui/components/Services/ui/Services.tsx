@@ -22,7 +22,7 @@ const Services: FC<IServices> = ({ services, removeService, addService, isEditMo
         <div className="flex gap-2 w-[80%] ">
           {services?.map((service) => (
             <Badge
-              className={`h-fit ${!isEditMode ? 'opacity-60 cursor-not-allowed' : ''}`}
+              className={`h-fit ${!isEditMode  ? 'opacity-60 cursor-not-allowed' : ''}`}
               key={service}
               onClick={
                 isEditMode

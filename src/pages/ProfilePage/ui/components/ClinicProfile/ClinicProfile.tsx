@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
 import { AddVetToClinicModal } from '@/pages/ClinicDetailPage/ui/components';
 import { RemoveVetButton } from './components';
 
+
 const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isOpenAlertModal, setIsOpenAlertModal] = useState(false);
@@ -31,7 +32,9 @@ const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
     email: clinic?.email,
     description: clinic?.description,
     city: clinic?.city,
+    building: clinic?.building,
     street: clinic?.street,
+    postalCode: clinic?.postalCode,
     services: clinic?.services,
   });
 
@@ -57,7 +60,7 @@ const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
   const handleVetRemoved = () => {
     clinicApi.getClinicVets(clinic.id).then((vets) => setClinicVets(vets));
   };
-
+  console.log(clinic);
   return (
     <>
       <div className="flex items-center space-x-2 absolute top-8 right-6">
@@ -78,17 +81,23 @@ const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
         isSomeDataChanged={isSomeDataChanged}
         isEditMode={isEditMode}
         onChange={handleChange}
-        address={{ city: clinic?.city, street: clinic?.street }}
+        address={{
+          city: clinic?.city,
+          building: clinic?.building,
+          street: clinic?.street,
+          postalCode: clinic?.postalCode,
+        }}
       />
       <Separator className="mt-4" />
       <Services
         addService={(service) => {
           setServices([...services, service]);
         }}
+        services={services}
         removeService={(service) => {
           setServices(services.filter((s) => s !== service));
         }}
-        services={clinic?.services}
+        // services={clinic?.services}
         isEditMode={isEditMode}
       />
       <Separator className="mt-4" />
@@ -153,7 +162,12 @@ const ClinicProfile = ({ clinic }: { clinic: IClinic }) => {
           buttonApproveText="Сохранить"
           buttonCancelText="Отменить"
           buttonShowModalText="Сохранить"
-          onApprove={() => {
+          onApprove={async () => {
+            await clinicApi.updateClinicProfile({
+              ...userDataRef.current,
+              services,
+              id: clinic.id,
+            });
             updateUser<IClinic>({ ...userDataRef.current, services });
             setIsOpenAlertModal(false);
           }}
