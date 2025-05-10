@@ -1,7 +1,3 @@
-// import axios from 'axios';
-// import apiInstance from './api.instance';
-import { clinicMock } from '../mocks/clinic.mock';
-import { vetMock } from '../mocks/vet.mock';
 import apiInstance from './api.instance';
 
 const authApi = {
@@ -12,8 +8,6 @@ const authApi = {
     token: string;
     type: 'Bearer';
   }> => {
-    // const response = await apiInstance.post('/api/auth/login', { email, password });
-    // return response.data;
     const response = await apiInstance.post('auth/login', { login: email, password });
     return response.data;
   },
@@ -41,7 +35,6 @@ const authApi = {
         userType: 'ADMIN',
       };
     }
-    console.log('register', loginData);
     const response = await apiInstance.post('auth/signup', loginData);
     return response.data;
   },

@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
-import AllClinics from './components/AllClinics';
 import { clinicApi } from '@/entities/Clinic/api/clinic.api';
 import useClinicStore, { addClinic, setClinics } from '@/entities/Clinic/model/clinic.store';
 import { LoaderPinwheel, PlusIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { Button } from '@/shared/ui/button';
-import AddClinicModal from './components/AddClinicModal';
 import { toast } from 'sonner';
 import { ICreateClinic } from '@/entities/Clinic/types';
+import { ClinicsTable, AddClinicModal } from './components';
 
 const AllClinicsPage = () => {
   const clinics = useClinicStore((state) => state.clinics);
@@ -39,21 +37,14 @@ const AllClinicsPage = () => {
           Добавить клинику
         </Button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-[calc(100vh-140px)] overflow-y-auto">
-        {clinics === null ? (
-          <div className="absolute h-fit w-fit inset-0 m-auto">
-            <LoaderPinwheel className="animate-spin" />
-          </div>
-        ) : clinics.length > 0 ? (
-          clinics.map((clinic) => (
-            <Link key={clinic.id} to={`/clinic/${clinic.id}`}>
-              <AllClinics clinic={clinic} />
-            </Link>
-          ))
-        ) : (
-          <p className="col-span-full text-center text-gray-500">Клиники не найдены</p>
-        )}
-      </div>
+
+      {clinics === null ? (
+        <div className="absolute h-fit w-fit inset-0 m-auto">
+          <LoaderPinwheel className="animate-spin" />
+        </div>
+      ) : (
+        <ClinicsTable clinics={clinics} />
+      )}
 
       <AddClinicModal
         isOpen={isAddModalOpen}
