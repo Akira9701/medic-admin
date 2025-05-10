@@ -1,14 +1,26 @@
-import { FC, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import AllClinics from './components/AllClinics';
 import { clinicApi } from '@/entities/Clinic/api/clinic.api';
-import useClinicStore, { setClinics } from '@/entities/Clinic/model/clinic.store';
-import { LoaderPinwheel } from 'lucide-react';
-import { IClinic } from '@/entities/Clinic/types';
-import AddClinic from '@/pages/AddClinicPage/ui/AddClinicPage';
+import useClinicStore, { addClinic, setClinics } from '@/entities/Clinic/model/clinic.store';
+import { LoaderPinwheel, PlusIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { addClinicRoute } from '@/app/router/lib/constants';
-const AllClinicsPage: FC = () => {
+import { Button } from '@/shared/ui/button';
+import AddClinicModal from './components/AddClinicModal';
+import { toast } from 'sonner';
+import { ICreateClinic } from '@/entities/Clinic/types';
+
+const AllClinicsPage = () => {
   const clinics = useClinicStore((state) => state.clinics);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const handleAddClinic = (newClinic: Omit<ICreateClinic, 'id'>) => {
+    // Here you would typically call an API to create the clinic
+    // For now, we'll just update the store
+    clinicApi.createClinic(newClinic).then((clinic) => {
+      addClinic(clinic);
+      toast.success('Clinic added successfully');
+    });
+  };
 
   useEffect(() => {
     clinicApi.getAllClinics().then((clinics) => setClinics(clinics));
@@ -16,13 +28,14 @@ const AllClinicsPage: FC = () => {
 
   return (
     <div className="w-full h-full relative">
-      <div className="flex justify-between items-center mt-10 mb-3 border-b pb-2">
-      <h2 className="mt-10 mb-3 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+      <div className="border-b mb-2 flex justify-between items-center">
+        <h2 className="mt-10 mb-3 scroll-m-20 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
           All Clinics
         </h2>
-        <Link to={addClinicRoute} className="px-4 py-2 bg-white text-black border border-black rounded-md hover:bg-gray-100 transition-colors">
+        <Button onClick={() => setIsAddModalOpen(true)}>
+          <PlusIcon className="w-4 h-4 mr-2" />
           Add Clinic
-        </Link>
+        </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 h-[calc(100vh-140px)] overflow-y-auto">
         {clinics === null ? (
@@ -36,11 +49,15 @@ const AllClinicsPage: FC = () => {
             </Link>
           ))
         ) : (
-          <p className="col-span-full text-center text-gray-500">
-            No clinics found
-          </p>
+          <p className="col-span-full text-center text-gray-500">No clinics found</p>
         )}
       </div>
+
+      <AddClinicModal
+        isOpen={isAddModalOpen}
+        onOpenChange={setIsAddModalOpen}
+        onAddClinic={handleAddClinic}
+      />
     </div>
   );
 };

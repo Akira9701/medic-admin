@@ -21,3 +21,17 @@ export interface IClinic {
     },
   ];
 }
+
+export interface ICreateClinic {
+  name: string;
+  description: string;
+  phone: string;
+  email: string;
+  address: {
+    city: string;
+    street: string;
+    building: string;
+  };
+  licenseNumber: string;
+  workingHours: string[];
+}
