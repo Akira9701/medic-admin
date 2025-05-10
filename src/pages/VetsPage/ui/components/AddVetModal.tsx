@@ -54,7 +54,7 @@ const AddVetModal = ({ isOpen, onOpenChange, onAddVet }: AddVetModalProps) => {
           logoUrl: '',
         },
         services: [],
-        address: {
+        addressDto: {
           city: '',
           street: '',
           building: '',

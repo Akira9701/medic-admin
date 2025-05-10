@@ -13,7 +13,7 @@ export interface IVet {
     logoUrl: string;
   };
   services: string[];
-  address: {
+  addressDto: {
     city: string;
     street: string;
     building: string;
