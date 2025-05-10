@@ -14,10 +14,6 @@ export default function PetListPage() {
 
   const [nameFilter, setNameFilter] = useState('');
 
-  useEffect(() => {
-    fetchPets();
-  }, []);
-
   // Filter pets based on name and type
   const filteredPets = pets.filter((pet) => {
     const matchesName = pet.name.toLowerCase().includes(nameFilter.toLowerCase());

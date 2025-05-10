@@ -29,6 +29,7 @@ import { setVets } from '@/entities/Vets/model/vets.store';
 import vetsApi from '@/entities/Vets/api';
 import { clinicApi } from '@/entities/Clinic/api/clinic.api';
 import { setClinics } from '@/entities/Clinic/model/clinic.store';
+import { fetchPets } from '@/entities/Pet/model/pet.store';
 const Root = () => {
   const navigate = useNavigate();
   const isShowLoader = useAuthStore((state) => state.isShowLoader);
@@ -88,6 +89,7 @@ const Root = () => {
                 setVets(vets);
               });
               clinicApi.getAllClinics().then((clinics) => setClinics(clinics));
+              fetchPets();
             })
             .then(() => {
               delay(400).then(() => {
