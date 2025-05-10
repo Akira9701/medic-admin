@@ -1,3 +1,4 @@
+import apiInstance from '@/shared/api/api.instance';
 import { IPet, IMedicalRecord } from '../types';
 import { EPetType } from '@/shared/constants/pet.constants';
 import { delay } from '@/shared/lib/utils/delay.utils';
@@ -14,8 +15,8 @@ const petApi = {
    */
 
   getPets: async (): Promise<IPet[]> => {
-    await delay(800);
-    return [...petsMock];
+    const response = await apiInstance.get('/profiles/pets/all');
+    return response.data;
   },
 
   /**
