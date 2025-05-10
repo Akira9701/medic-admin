@@ -22,7 +22,7 @@ import { setIsShowLoader } from '@/entities/Auth/model/auth.store';
 import { delay } from '@/shared/lib/utils/delay.utils';
 import authApi from '@/shared/api/auth.api';
 import authToken from '@/shared/localstorage/authToken';
-import { decodeToken } from '@/shared/lib/utils/jwt.utils';
+import { decodeToken, getUserTypeFromToken } from '@/shared/lib/utils/jwt.utils';
 
 // Define validation schema using Zod for Vet
 const vetFormSchema = z
@@ -89,31 +89,52 @@ export default function RegisterPage() {
   async function onSubmit(values: FormValues) {
     setIsLoading(true);
     try {
-      // Register user and get authentication token
-      const { token } = await authApi.register(
+      // Step 1: Register user
+      const registerResponse = await authApi.register(
         values.email,
         values.password,
         values.name,
         isClinic,
       );
 
-      // Set authentication token
-      authToken.set(token);
+      if (!registerResponse || !registerResponse.message) {
+        throw new Error('Registration failed: No response received');
+      }
 
-      // Decode the JWT token
-      const decodedToken = decodeToken(token);
+      // Step 2: Login to get the authentication token
+      const authResponse = await authApi.login(values.email, values.password);
+
+      if (!authResponse || !authResponse.token) {
+        throw new Error('Login failed after registration: No token received');
+      }
+
+      // Step 3: Set authentication token
+      authToken.set(authResponse.token);
+
+      // Step 4: Decode the JWT token
+      const decodedToken = decodeToken(authResponse.token);
       if (!decodedToken) {
         throw new Error('Invalid token received');
       }
 
-      const createdUser = await userApi.createUser(decodedToken as unknown as IClinic | IVet);
+      // Step 5: Determine user type from token
+      const userType = getUserTypeFromToken(authResponse.token);
 
-      // Set auth token and user data
-      setUser(createdUser);
+      // Step 6: Set user data in store
+      if (userType === 'clinic' || userType === 'vet') {
+        // Safe to cast as we've already verified the token structure with getUserTypeFromToken
+        setUser(decodedToken as unknown as IClinic | IVet);
+      } else {
+        // Fallback to API call if token doesn't have enough information
+        const userResponse = await userApi.getUser();
+        setUser(userResponse as IClinic | IVet | null);
+      }
 
-      // Show loader and navigate
-      setIsShowLoader(true);
+      // Step 7: Show success message and navigate to main app
       toast.success('Registration successful');
+
+      // Show loader during navigation
+      setIsShowLoader(true);
       navigate(rootRoute);
 
       // Hide loader after delay
@@ -122,7 +143,7 @@ export default function RegisterPage() {
       });
     } catch (error) {
       console.error('Registration error', error);
-      toast.error('Failed to register. Please try again.');
+      toast.error(error instanceof Error ? error.message : 'Failed to register. Please try again.');
     } finally {
       setIsLoading(false);
     }

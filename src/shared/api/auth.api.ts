@@ -24,7 +24,7 @@ const authApi = {
     title: string,
     isClinic: boolean,
   ): Promise<{
-    token: string;
+    message: string;
   }> => {
     let loginData = {};
     if (isClinic) {
